@@ -1,0 +1,81 @@
+@import "src/scss/abstracts/variables";
+
+.avatar {
+  img {
+    width: 80px;
+    height: 80px;
+  }
+
+  span {
+    color: rgba($lightGray, 0.7);
+    font-size: 13px;
+  }
+}
+
+.user-data {
+
+  li {
+    color: rgba($lightGray, 0.7);
+    display: inline-block;
+    font-size: 11px;
+    list-style-type: none;
+    padding: 1em 0.4em;
+    border-left: 1px solid rgba($lightGray, 0.1);
+
+    &:last-child {
+      border-left: none;
+    }
+
+    span {
+      color: $light;
+      display: block;
+      font-size: 20px;
+      text-align: center;
+      font-weight: 600;
+    }
+  }
+}
+
+.user-dashboard-list {
+  list-style: none;
+  color: $lightGray;
+  transition: all 0.3s;
+
+  li {
+    a {
+      color: inherit;
+
+      i {
+        font-size: 18px;
+      }
+
+      span {
+        font-weight: 600;
+        font-size: 14px;
+      }
+    }
+
+    border-bottom: 1px solid rgba($lightGray, 0.1);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      a {
+        opacity: 0.5;
+        transition: all 0.3s;
+      }
+    }
+  }
+}
+
+.btn-orange {
+  background: $orange;
+  transition: all 0.3s;
+
+  &:hover {
+    background: rgba($orange, 0.8);
+    transition: all 0.3s;
+  }
+}

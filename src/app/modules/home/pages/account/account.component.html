@@ -1,0 +1,142 @@
+<app-home-go-back></app-home-go-back>
+<div class="container-fluid">
+  <div class="row">
+    <div class="avatar p-3 d-flex flex-column justify-content-center align-items-center">
+      <a [routerLink]="['/user', (currentUser$ | async)?.username]" class="text-decoration-none">
+        <img src="{{(currentUser$ | async)?.avatar ? (currentUser$ | async)?.avatar : 'assets/images/avatar.jpg'}}"
+             alt="avatar" class="rounded-circle mb-2">
+      </a>
+      <span>{{(currentUser$ | async)?.name}}</span>
+      <ul class="user-data p-0 mt-3">
+        <li>
+          <span>{{toPersian((currentUser$ | async)?.followings)}}</span>
+          دنبال شده
+        </li>
+        <li>
+          <span>{{toPersian((currentUser$ | async)?.followers)}}</span>
+          دنبال کننده
+        </li>
+        <li>
+          <span>{{toPersian((currentUser$ | async)?.playlists)}}</span>
+          پلی لیست
+        </li>
+      </ul>
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
+          <i class="tio-add"></i>
+          ایجاد پلی لیست
+        </button>
+        <button class="btn btn-sm btn-orange" type="button" (click)="onSignOut()">خروج از حساب کاربری</button>
+      </div>
+    </div>
+  </div>
+  <div class="row d-flex flex-column justify-content-center align-items-center">
+    <ul class="user-dashboard-list col-10 col-md-6 col-xl-4">
+      <li class="py-2">
+        <a [routerLink]="['/account/edit']" class="text-decoration-none">
+          <i class="tio-user-outlined float-start"></i>
+          <span class="ps-3">مشخصات کاربری</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/my-music']" class="text-decoration-none">
+          <i class="tio-music float-start"></i>
+          <span class="ps-3">موزیک های من</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/my-podcasts']" class="text-decoration-none">
+          <i class="tio-podcast float-start"></i>
+          <span class="ps-3">پادکست های دنبال شده</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/my-playlists']" class="text-decoration-none">
+          <i class="tio-disc float-start"></i>
+          <span class="ps-3">پلی لیست های من</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/user', (currentUser$ | async)?.username, 'followings']" class="text-decoration-none">
+          <i class="tio-checkmark-square float-start"></i>
+          <span class="ps-3">لیست دنبال شده ها</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/user', (currentUser$ | async)?.username, 'followers']" class="text-decoration-none">
+          <i class="tio-circle-outlined float-start"></i>
+          <span class="ps-3">لیست دنبال کنندگان</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/recent-plays']" class="text-decoration-none">
+          <i class="tio-play-outlined float-start"></i>
+          <span class="ps-3">پخش های اخیر شما</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+      <li class="py-2">
+        <a [routerLink]="['/now-playing']" class="text-decoration-none">
+          <i class="tio-menu-hamburger float-start"></i>
+          <span class="ps-3">لیست درحال پخش</span>
+          <i class="tio-chevron-left float-end"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addPlaylistModal" tabindex="-1" aria-labelledby="addPlaylistModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateModalLabel">ایجاد پلی لیست</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form accept-charset="UTF-8" [formGroup]="form" (ngSubmit)="onCreatePlaylist()">
+          <div class="modal-body">
+            <div class="row form-group">
+              <div class="col-12">
+                <input type="text" formControlName="title"
+                       class="form-control form-control-sm"
+                       placeholder="عنوان پلی لیست"
+                       [class.is-invalid]="title.invalid && (title.dirty || title.touched)" id="title"
+                       aria-describedby="titleHelp">
+                <div id="titleHelp" class="form-text">عنوان پلی لیست نمیتواند تکراری باشد.</div>
+              </div>
+              <div class="col-12 my-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input"
+                         formControlName="type"
+                         type="checkbox"
+                         id="switchPublic">
+                  <label class="form-check-label" for="switchPublic">نمایش بصورت عمومی</label>
+                </div>
+              </div>
+              <div class="col-12 my-2">
+                <div class="form-check form-switch">
+                  <input class="form-check-input"
+                         formControlName="featured"
+                         type="checkbox"
+                         id="switchFeature">
+                  <label class="form-check-label" for="switchFeature">نمایش در ویژه ها</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">انصراف</button>
+            <button type="submit" class="btn btn-sm btn-orange" [disabled]="!form.valid">ایجاد پلی لیست</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

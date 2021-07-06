@@ -1,0 +1,43 @@
+<div class="carousel-container container-fluid">
+  <div class="d-flex justify-content-center my-5" *ngIf="(genres$ | async).loading">
+    <div class="spinner-border text-white" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div class="row" *ngIf="! (genres$ | async).loading">
+    <div class="carousel-head border-0 mt-0 col-12"><!-- title -->
+      <h3 class="mb-2 mt-3">
+        ژانر و سبک
+        <a [routerLink]="['/genre']" class="text-decoration-none float-end"><i class="tio-arrow-backward"></i></a>
+      </h3>
+    </div><!-- title -->
+    <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center"><!--  slide -->
+
+      <a #genrePosts
+         *ngFor="let genre of (genres$ | async).genres; let i = index; trackBy: trackByFunc"
+         [routerLink]="['/musics']"
+         queryParamsHandling="merge"
+         [queryParams]="{'genre': genre.slug}"
+         class="genre-post rounded m-2 carousel-element element-slider text-decoration-none"
+         title="{{genre.title_en}}">
+        <div class="overlay-gradient">
+          <h3>{{genre.title_fa}}</h3>
+          <img
+            crossorigin="anonymous"
+            src="{{genre.thumbnail}}"
+            alt="{{genre.title_fa}}">
+        </div>
+      </a>
+
+    </div><!--  slide -->
+    <div class="carousel-arrow arrow-genre col-12 p-0"><!-- arrow -->
+      <button class="slide-right btn" id="slide-right-featured-genres" type="button">
+        <i class="tio-chevron-right"></i>
+      </button>
+      <button class="slide-left btn" id="slide-left-featured-genres" type="button">
+        <i class="tio-chevron-left"></i>
+      </button>
+    </div><!-- /arrow -->
+  </div>
+</div>
+

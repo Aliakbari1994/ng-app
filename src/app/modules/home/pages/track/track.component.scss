@@ -1,0 +1,209 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .header-container {
+  .title-fa {
+    font-size: 18px;
+  }
+
+  .title-en {
+    font-size: 13px;
+  }
+}
+
+::ng-deep .shrink-medium {
+  .title-en, .rate, .explicit, .feat, .details-list, .genres {
+    display: none;
+  }
+
+  .greedy {
+    top: -20px;
+  }
+
+  .title-fa {
+    margin-top: 10px;
+  }
+
+}
+
+::ng-deep .shrink-small {
+  .title-en, .rate, .explicit, .artists, .details-list, .genres, .greedy {
+    display: none;
+  }
+
+  .title-fa {
+    font-size: 14px;
+  }
+
+  .title-en {
+    display: none;
+  }
+}
+
+
+// global
+.title {
+  color: $light;
+
+  .title-fa {
+    font-weight: bolder;
+  }
+
+  .title-en {
+    opacity: 0.7;
+  }
+}
+
+.details-list {
+  font-size: 11px;
+}
+
+.rate {
+  font-size: 12px;
+  color: $light;
+
+  i {
+    font-size: 18px;
+    color: $orange;
+  }
+
+  a {
+    font-size: 10px;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.explicit {
+  font-size: 11px;
+  color: $orange;
+  font-weight: 600;
+}
+
+.countdown {
+  background: $orange;
+
+  ul {
+    li {
+      color: rgba($darkGray, 0.7);
+      display: inline-block;
+      font-size: 11px;
+      list-style-type: none;
+      padding: 1em 1.5rem;
+      text-align: center;
+
+      &:not(:last-child) {
+        border-left: 1px solid rgba($darkGray, 0.1);
+      }
+
+      span {
+        color: $dark;
+        display: block;
+        font-size: 20px;
+        text-align: center;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.custom-list {
+  padding: 20px 15px;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  span {
+    font-weight: bold;
+  }
+
+  a {
+    color: inherit;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &:not(:last-child) {
+      &:before {
+        content: '،';
+        padding: 0 5px;
+      }
+    }
+
+    &:last-child {
+      &:before {
+        content: ' و';
+        padding: 0 5px;
+      }
+    }
+
+    &:first-of-type {
+      &:before {
+        content: '' !important;
+        padding: 0 !important;
+      }
+    }
+  }
+
+  &:nth-child(odd) {
+    background: $dark;
+  }
+}
+
+.rate-body {
+  color: $dark;
+
+  a {
+    color: inherit;
+  }
+}
+
+.rating-header-content {
+  color: $dark;
+  @media (max-width: 767.98px) {
+    grid-row: 2 / 3;
+  }
+  font-size: 12px;
+
+  .rate {
+    i {
+      font-size: 16px;
+      color: $orange;
+    }
+  }
+
+  #rating-container {
+    i {
+      font-size: 27px;
+      margin: 0 2px;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      cursor: pointer;
+    }
+
+    i.checked {
+      color: $orange;
+    }
+  }
+}
+
+.btn-orange {
+  background: $orange;
+  transition: all 0.3s;
+  &:hover {
+    background: rgb($orange, 0.8);
+  }
+}
+

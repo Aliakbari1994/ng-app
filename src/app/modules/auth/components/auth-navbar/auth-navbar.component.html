@@ -1,0 +1,11 @@
+<nav class="auth-nav d-none d-lg-flex justify-content-end align-items-center flex-grow-0">
+  <a (click)="goBack()"
+     class="back-link text-decoration-none rounded-circle d-flex align-items-center justify-content-center align-self-start">
+    <i class="tio-chevron-right"></i>
+  </a>
+  <p class="auth-link m-0 flex-grow-1 text-end">
+    <ng-content select="[navbar-text]"></ng-content>
+    &nbsp;
+    <ng-content select="[navbar-link]"></ng-content>
+  </p>
+</nav>

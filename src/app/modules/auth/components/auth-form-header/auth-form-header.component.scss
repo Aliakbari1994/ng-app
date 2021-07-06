@@ -1,0 +1,14 @@
+@import "/src/scss/abstracts/variables";
+
+.logo {
+  max-width: 536px;
+  padding: 48px 0 0;
+  margin-bottom: 30px;
+  color: inherit;
+}
+
+h2 {
+  font-size: 24px;
+  color: $dark;
+  margin-bottom: 26px;
+}

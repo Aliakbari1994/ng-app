@@ -1,0 +1,72 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .header-container {
+  .page-type {
+    font-size: 12px;
+  }
+
+  .user-name {
+    font-size: 40px;
+    font-weight: 900;
+  }
+
+  .follow-btn {
+    font-size: 15px;
+  }
+}
+
+::ng-deep .shrink-medium {
+  .user-name {
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  .details-list, .follow-btn, .copy-clipboard {
+    display: none !important;
+  }
+
+  .section-bottom {
+    margin-bottom: 30px;
+  }
+}
+
+::ng-deep .shrink-small {
+  .page-type, .details-list, .follow-btn, .copy-clipboard {
+    display: none !important;
+  }
+
+  .user-name {
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+// global
+.title {
+  color: $light;
+}
+
+.more-dot {
+  margin: 0 2px;
+}
+
+.copy-clipboard {
+  .dropdown-toggle {
+    color: $light;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.details-list {
+  font-size: 12px;
+  @media (max-width: 767.98px) {
+    font-size: 11px;
+  }
+}

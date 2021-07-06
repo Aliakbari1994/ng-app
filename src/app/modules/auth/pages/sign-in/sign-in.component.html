@@ -1,0 +1,42 @@
+<app-auth-layout>
+  <app-auth-navbar>
+    <span navbar-text>هنوز ثبت نام نکرده اید؟</span>
+    <a navbar-link class="text-decoration-none" [routerLink]="['/auth/sign-up']">ثبت نام</a>
+  </app-auth-navbar>
+  <main class="d-flex align-items-center justify-content-center flex-grow-1 m-0 p-0">
+    <div class="auth-content m-lg-0">
+      <app-auth-form-header>
+        <span main-header-text>ورود به پنل کاربری</span>
+        <span main-social-text>ورود از طریق حساب گوگل</span>
+      </app-auth-form-header>
+      <app-auth-form>
+        <form accept-charset="UTF-8" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form-fields">
+            <!-- form field content -->
+            <fieldset>
+              <label for="sign-in">ایمیل یا موبایل</label>
+              <input type="text" id="sign-in" class="text-input" dir="ltr" autofocus formControlName="username">
+              <span class="icon"
+                    [class.form-pending]="username.pending"
+                    [class.form-invalid]="username.invalid && (username.dirty || username.touched)"
+                    [class.form-valid]="username.valid && (username.dirty || username.touched)"
+              >
+              </span>
+            </fieldset>
+            <fieldset>
+              <label for="password">
+                گذرواژه
+                <a class="text-left text-decoration-none" [routerLink]="['/auth/password-recovery']">بازیابی گذرواژه</a>
+              </label>
+              <input type="password" id="password" class="text-input" dir="ltr" formControlName="password">
+            </fieldset>
+          </div>
+          <button type="submit" class="form-btn btn d-block border-0" [disabled]="!form.valid">ورود</button>
+        </form>
+        <!-- form content link -->
+        <span form-text>هنوز ثبت نام نکرده اید؟</span>
+        <a class="text-decoration-none" form-link [routerLink]="['/auth/sign-up']">ثبت نام</a>
+      </app-auth-form>
+    </div>
+  </main>
+</app-auth-layout>

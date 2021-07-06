@@ -1,0 +1,385 @@
+<app-home-shrink-header>
+  <img header-thumbnail
+       crossorigin="anonymous"
+       [src]="album.thumbnail"
+       [alt]="album.slug">
+  <div header-info-top class="col-12">
+    <div class="title">
+      <h2 class="title-fa">{{album.titleFa | faNum}}</h2>
+      <h2 class="title-en">{{album.titleEn}}</h2>
+    </div>
+    <div class="rate my-1">
+      <i class="tio-star"></i>
+      <span class="ms-2" dir="ltr">
+            <b>{{ album.albumRate }}</b> / <small>10</small>
+          </span>
+      <a *ngIf="(isLoggedIn$ | async)" data-bs-toggle="modal" data-bs-target="#ratingModal"
+         class="d-block text-decoration-none" title="ثبت امتیاز">
+        امتیاز خود را ثبت کنید.
+      </a>
+      <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="d-block text-decoration-none"
+         title="ثبت امتیاز">
+        امتیاز خود را ثبت کنید.
+      </a>
+    </div>
+    <div class="explicit" *ngIf="album.explicit">مناسب شنونده بزرگسال</div>
+    <div class="artists mt-1">
+      <div class="owner">
+        اثری از :
+        <a *ngFor="let artist of album.ownerArtists"
+           (click)="shortLink('/artist', artist.slug_id)"
+           [routerLink]="['/artist', artist.slug_id, artist.slug]"
+           class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa | faNum}}</a>
+      </div>
+      <div class="feat" *ngIf="album.featArtists.length">
+        با همراهی :
+        <a *ngFor="let artist of album.featArtists"
+           (click)="shortLink('/artist', artist.slug_id)"
+           [routerLink]="['/artist', artist.slug_id, artist.slug]"
+           class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa | faNum}}</a>
+      </div>
+    </div>
+  </div>
+  <ng-container header-info-bottom>
+    <div class="details-list my-2">
+      <ul class="ps-0 mb-0">
+        <li class="d-inline-block me-1">{{ album.publicationYear | faNum}}</li>
+        •
+        <li class="d-inline-block mx-1">{{album.type == 'persian' ? 'موسیقی ایران' : 'موسیقی جهان' }}</li>
+        •
+        <li class="d-inline-block mx-1">{{ timeChangeFormat(album.duration) | faNum }}</li>
+      </ul>
+    </div>
+    <div class="genres">
+      <a *ngFor="let genre of album.genres"
+         [routerLink]="['/musics']"
+         queryParamsHandling="merge"
+         [queryParams]="{'genre': genre.slug}"
+         class="d-inline-block text-decoration-none m-1" [title]="genre.title_en">{{genre.title_fa}}</a>
+    </div>
+    <app-home-greedy-nav>
+      <nav class='greedy mt-2'>
+        <ul class='links'>
+          <li>
+            <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+            <a *ngIf="(isLoggedIn$ | async)" (click)="play()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+          </li>
+          <li>
+            <div class="position-relative">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="tio-add"></i>
+                افزودن به
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item small" *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlaying()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                  <a class="dropdown-item small" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li (click)="setAlbumSlugId(slugId)">
+                  <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item text-decoration-none small" href="#"
+                     data-bs-toggle="modal"
+                     data-bs-target="#playlistModal">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                  <a *ngIf="!(isLoggedIn$ | async)" class="dropdown-item text-decoration-none small"
+                     (click)="alertToSignIn()">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href='#' data-bs-toggle="modal" data-bs-target="#shareModal">
+              <i class="tio-share"></i>
+              اشتراک گذاری
+            </a>
+          </li>
+        </ul>
+        <button><span class="tio-more-horizontal"></span></button>
+        <ul class='hidden-links hidden'></ul>
+      </nav>
+    </app-home-greedy-nav>
+  </ng-container>
+  <ng-container content-flexible>
+    <div *ngIf="album.timeNow && album.publishedAt && album.timeNow < album.publishedAt"
+         class="countdown d-flex justify-content-center align-items-center">
+      <ul class="p-0 mt-3">
+        <li><span id="days"></span>روز</li>
+        <li><span id="hours"></span>ساعت</li>
+        <li><span id="minutes"></span>دقیقه</li>
+        <li><span id="seconds"></span>ثانیه</li>
+      </ul>
+    </div>
+    <ul class="custom-nav nav m-3 justify-content-center" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block active" id="pills-track-list-tab" data-bs-toggle="pill"
+           href="#pills-track-list" role="tab"
+           aria-controls="pills-credits" aria-selected="true">لیست قطعات</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block" id="pills-credits-tab" data-bs-toggle="pill"
+           href="#pills-credits" role="tab"
+           aria-controls="pills-credits" aria-selected="true">مشخصات قطعه</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block" id="pills-lyrics-tab" data-bs-toggle="pill" href="#pills-lyrics"
+           role="tab"
+           aria-controls="pills-lyrics" aria-selected="true">ترانه قطعه</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show nav-content active" id="pills-track-list" role="tabpanel"
+           aria-labelledby="pills-track-list-tab">
+        <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <ul class="list-group" *ngIf="!(sectionLoading$ | async)">
+          <div class="no-item" [hidden]="albumTracks.tracks.length">
+            <i class="tio-error-outlined me-3"></i>
+            هنوز قطعه ای برای این آلبوم ثبت نشده است.
+          </div>
+          <li *ngFor="let track of albumTracks.tracks;let i = index; trackBy: trackByFunc"
+              class="track-list list-artists"
+              [class.active]="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'">
+            <div class="track-item track-title">
+              <span class="me-1 voice-icon"><i class="tio-voice"></i></span>
+              <span class="me-1">{{toPersian(track.track_number)}}.</span>
+              <a
+                (click)="shortLink('/track', track.slug_id)"
+                [routerLink]="['/track', track.slug_id, track.slug]"
+                class="text-decoration-none"
+                [title]="track.title_en">{{toPersian(track.title_fa)}}</a>
+              <button class="btn ms-3" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn ms-3" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-buttons">
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-artists">
+              <a *ngFor="let artist of track.owner_artists"
+                 (click)="shortLink('/artist', artist.slug_id)"
+                 class="text-decoration-none"
+                 [routerLink]="['/artist', artist.slug_id, artist.slug]"
+                 [title]="artist.name_en">{{toPersian(artist.name_fa)}}</a>
+            </div>
+            <div class="track-item track-duration">
+              <span>{{toPersian(timeChangeFormat(track.duration))}}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade show nav-content" id="pills-credits" role="tabpanel"
+           aria-labelledby="pills-credits-tab">
+        <ng-container *ngFor="let track of albumTracks.tracks; let i = index; trackBy: trackByFunc">
+          <ul class="list-group"
+              [class.d-none]="(playerNowPlaying$ | async)?.slug != track.slug_id">
+            <li *ngIf="track.singer_artists.length" class="custom-list">
+              <span>خواننده : </span>
+              <a *ngFor="let artist of track.singer_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.lyricist_artists.length" class="custom-list">
+              <span>ترانه : </span>
+              <a *ngFor="let artist of track.lyricist_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.music_artists.length" class="custom-list">
+              <span>موسیقی : </span>
+              <a *ngFor="let artist of track.music_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.instrumentalist_artists.length" class="custom-list">
+              <span>نوازندگان : </span>
+              <a *ngFor="let artist of track.instrumentalist_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none"
+                 [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.arrangement_artists.length" class="custom-list">
+              <span>تنظیم : </span>
+              <a *ngFor="let artist of track.arrangement_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.mix_master_artists.length" class="custom-list">
+              <span>میکس و مستر : </span>
+              <a *ngFor="let artist of track.mix_master_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+      <div class="tab-pane fade show nav-content lyrics text-center" id="pills-lyrics" role="tabpanel"
+           aria-labelledby="pills-lyrics-tab">
+        <ng-container *ngFor="let track of albumTracks.tracks; let i = index; trackBy: trackByFunc">
+          <ng-container
+            *ngIf="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'">
+            <div [hidden]="!track.lyrics.length" [innerHTML]="track.lyrics | faNum"></div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <app-home-related-carousel></app-home-related-carousel>
+    <app-home-comments [commentableType]="'album'" [commentableId]="slugId"></app-home-comments>
+  </ng-container>
+</app-home-shrink-header>
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ratingModalLabel">ثبت امتیاز</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body rate-body">
+        <p class="small text-center">
+          <b>{{album.titleFa | faNum}} </b>اثری از <b><a *ngFor="let artist of album.ownerArtists"
+                                                         [routerLink]="['/artist', artist.slug_id, artist.slug]"
+                                                         class="text-decoration-none"
+                                                         [title]="artist.name_en">{{artist.name_fa | faNum}}</a></b>
+        </p>
+        <div class="rating-header-content text-center">
+          <p class="small fw-bold">امتیاز خود را ثبت کنید:</p>
+          <div class="mt-2 d-flex justify-content-center" id="rating-container" dir="ltr">
+            <i class="tio-star" [ngClass]="album.userRate >= 1 ? 'checked' : ''" data-value="1" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="1"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 2 ? 'checked' : ''" data-value="2" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="2"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 3 ? 'checked' : ''" data-value="3" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="3"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 4 ? 'checked' : ''" data-value="4" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="4"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 5 ? 'checked' : ''" data-value="5" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="5"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 6 ? 'checked' : ''" data-value="6" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="6"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 7 ? 'checked' : ''" data-value="7" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="7"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 8 ? 'checked' : ''" data-value="8" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="8"></i>
+            <i class="tio-star" [ngClass]="album.userRate >= 9 ? 'checked' : ''" data-value="9" data-bs-toggle="tooltip"
+               data-bs-placement="top" title="9"></i>
+            <i class="tio-star" [ngClass]="album.userRate == 10 ? 'checked' : ''" data-value="10"
+               data-bs-toggle="tooltip" data-bs-placement="top" title="10"></i>
+          </div>
+          <div class="mt-2">
+            <b>امتیاز شما : </b>
+            <span class="your-rate">10 / <b>{{ album.userRate }}</b></span>
+          </div>
+          <div class="dropdown-divider"></div>
+          <p class="small">
+            {{ album.countVoters | faNum }} کاربر به این اثر امتیاز داده اند که میانگین آن {{album.albumRate | faNum}}
+            از ۱۰ می باشد.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<app-home-share [url]="url"></app-home-share>
+<app-home-playlist-modal></app-home-playlist-modal>

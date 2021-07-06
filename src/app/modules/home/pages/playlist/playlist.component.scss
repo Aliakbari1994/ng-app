@@ -1,0 +1,357 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .header-container {
+  .page-type {
+    font-size: 12px;
+  }
+
+  .playlist-title-fa {
+    font-size: 23px;
+    @media (min-width: 768px) {
+      font-size: 40px;
+    }
+    font-weight: 900;
+  }
+
+  .follow-btn {
+    font-size: 15px;
+  }
+}
+
+::ng-deep .shrink-medium {
+  .playlist-title-fa {
+    font-size: 19px;
+    @media (min-width: 768px) {
+      font-size: 30px;
+    }
+    font-weight: 600;
+  }
+
+  .details-list, .follow-btn, .copy-clipboard {
+    display: none !important;
+  }
+
+  .section-bottom {
+    margin-bottom: 30px;
+  }
+
+  .greedy {
+    top: 15px;
+  }
+
+  .header-image {
+    img {
+      &:not(:first-child) {
+        display: none;
+      }
+    }
+  }
+}
+
+::ng-deep .shrink-small {
+  .page-type, .details-list, .follow-btn, .copy-clipboard, .greedy {
+    display: none !important;
+  }
+
+  .playlist-title-fa {
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+// global
+.title {
+  color: $light;
+}
+
+.more-dot {
+  margin: 0 2px;
+}
+
+.copy-clipboard {
+  .dropdown-toggle {
+    color: $light;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.details-list {
+  font-size: 12px;
+  @media (max-width: 767.98px) {
+    font-size: 11px;
+  }
+}
+
+.custom-list {
+  padding: 20px 15px;
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  span {
+    font-weight: bold;
+  }
+
+  a {
+    color: $light;
+  }
+}
+
+.track-list {
+  color: $light;
+  padding: 0 15px;
+  width: 100%;
+  display: grid;
+  grid-gap: 2px;
+  grid-template-columns: 50% calc(50% - 55px) 55px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &:nth-child(even) {
+    background: $dark;
+  }
+
+  &:hover {
+    background: rgba($light, 0.1);
+
+    button {
+      transition: all 0.3s;
+      opacity: 1;
+    }
+  }
+
+  .track-item {
+    display: flex;
+    align-items: center;
+
+    span {
+      font-weight: normal;
+    }
+  }
+
+  .track-title {
+    @media (max-width: 767.98px) {
+      padding: 10px 0 2px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    button {
+      @media (max-width: 767.98px) {
+        display: none;
+      }
+    }
+
+    i {
+      font-size: 18px;
+    }
+
+    .voice-icon i {
+      display: none;
+    }
+  }
+
+  .track-artists {
+    @media (max-width: 767.98px) {
+      grid-area: 2 / 1 / 3 / 1;
+      padding: 2px 0 10px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    opacity: 0.7;
+  }
+
+  .track-buttons {
+    display: none;
+    @media (max-width: 767.98px) {
+      grid-area: 1 / 2 / 3 / 3;
+      justify-self: end;
+      display: flex;
+    }
+  }
+
+  .track-duration {
+    justify-self: end;
+    @media (max-width: 767.98px) {
+      grid-area: 1 / 3 / 3 / 4;
+    }
+    overflow: hidden;
+    opacity: 0.7;
+  }
+
+  .dropdown-menu {
+    li:nth-child(odd) {
+      background: transparent;
+    }
+  }
+
+  button {
+    transition: all 0.3s;
+    font-size: 18px;
+    opacity: 0;
+    @media (max-width: 767.98px) {
+      padding: 16px 12px;
+      opacity: 1;
+    }
+    padding: 11px;
+    color: $light;
+    border-radius: 0;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:before {
+      display: none;
+    }
+
+    &:hover {
+      background: rgba($light, 0.1);
+    }
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .dropdown-item {
+    font-size: 11px !important;
+  }
+
+  &.active {
+    color: $green;
+
+    button {
+      color: $green !important;
+    }
+
+    .track-title {
+      .voice-icon i {
+        display: block;
+      }
+    }
+  }
+}
+
+.list-artists {
+  a {
+    color: inherit;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &:not(:last-child) {
+      &:before {
+        content: '،';
+        padding: 0 5px;
+      }
+    }
+
+    &:last-child {
+      &:before {
+        content: ' و';
+        padding: 0 5px;
+      }
+    }
+
+    &:first-of-type {
+      &:before {
+        content: '' !important;
+        padding: 0 !important;
+      }
+    }
+  }
+}
+
+::ng-deep .header-image {
+  img {
+    box-shadow: none !important;
+    cursor: pointer;
+    width: 50%;
+    z-index: 3;
+
+    &:nth-child(2) {
+      width: 41%;
+      height: 10%;
+      transform: translate(0px, -4px);
+      opacity: 0.3;
+      z-index: 2;
+      position: absolute;
+    }
+
+    &:nth-child(3) {
+      width: 38%;
+      height: 10%;
+      transform: translate(0px, -7px);
+      opacity: 0.3;
+      z-index: 1;
+      position: absolute;
+    }
+
+    @media (min-width: 576px) {
+      width: 30%;
+      z-index: 3;
+      &:nth-child(2) {
+        width: 27%;
+        height: 27%;
+        transform: translate(0px, -4px);
+        opacity: 0.3;
+        z-index: 2;
+        position: absolute;
+      }
+      &:nth-child(3) {
+        width: 25%;
+        height: 25%;
+        transform: translate(0px, -7px);
+        opacity: 0.3;
+        z-index: 1;
+        position: absolute;
+      }
+    }
+    @media (min-width: 768px) {
+      width: 100%;
+      z-index: 3;
+      &:nth-child(2) {
+        width: 95%;
+        height: 95%;
+        transform: translate(233px, -4px);
+        opacity: 0.3;
+        z-index: 2;
+        position: static;
+      }
+      &:nth-child(3) {
+        width: 90%;
+        height: 90%;
+        transform: translate(455px, -8px);
+        opacity: 0.3;
+        z-index: 1;
+        position: static;
+      }
+    }
+  }
+}
+
+.dropdown-menu {
+  a {
+    cursor: pointer;
+  }
+}
+
+.btn-orange {
+  background: $orange;
+  transition: all 0.3s;
+  &:hover {
+    background: rgb($orange, 0.8);
+  }
+}

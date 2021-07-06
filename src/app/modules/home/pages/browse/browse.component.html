@@ -1,0 +1,90 @@
+<app-home-go-back></app-home-go-back>
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0">پلی لیست های ویژه</h2>
+
+    <div class="carousel-container container-fluid content-padding my-4">
+      <div class="row">
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center flex-wrap">
+
+          <div *ngFor="let playlist of (playlists$ | async); let i = index; trackBy: trackByFunc" class="carousel-element element-slider mb-4"><!-- item -->
+            <a
+              [routerLink]="['/playlist', playlist.slug_id]"
+              [title]="playlist.title"
+              class="carousel-thumbnail playlist-thumbnail text-decoration-none"><!-- thumbnail -->
+              <img crossorigin="anonymous"
+                   src="{{playlist.thumbnail}}"
+                   alt="{{playlist.title}}"
+                   class="carousel-track">
+              <img crossorigin="anonymous"
+                   src="{{playlist.thumbnail}}"
+                   alt="{{playlist.title}}"
+                   class="carousel-track">
+              <img crossorigin="anonymous"
+                   src="{{playlist.thumbnail}}"
+                   alt="{{playlist.title}}"
+                   class="carousel-track">
+              <div class="inner-overlay carousel-track playlist-inner justify-content-center align-items-center"></div>
+            </a><!-- thumbnail -->
+            <div class="outer-overlay"><!-- overlay -->
+
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlaying(playlist.slug_id)">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="!(isLoggedIn$ | async)"
+                      (click)="alertToSignIn()">
+                <i class="tio-play"></i>
+              </button>
+
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="(isLoggedIn$ | async)"
+                      (click)="play(playlist.slug_id)">
+                <i class="tio-play"></i>
+              </button>
+
+            </div><!-- overlay -->
+            <div class="carousel-info info-track mt-2"><!-- info -->
+              <a
+                [routerLink]="['/playlist', playlist.slug_id]"
+                [title]="playlist.title"
+                class="text-decoration-none">
+                <b>{{playlist.title}}</b>
+              </a>
+            </div><!-- info -->
+          </div><!-- item -->
+
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <h2 class="head-title content-padding">بر اساس دسته بندی</h2>
+    <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div *ngIf="!(sectionLoading$ | async)" class="content-padding my-3">
+      <a *ngFor="let category of categories.categories; let i = index; trackBy: trackByFunc" [routerLink]="['/browse', category.slug]"
+         class="cat-section text-decoration-none m-2">
+        <img [src]="category.thumbnail" [alt]="category.title_en">
+      </a>
+    </div>
+  </div>
+</div>

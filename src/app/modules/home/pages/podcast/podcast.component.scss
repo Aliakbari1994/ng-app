@@ -1,0 +1,170 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .header-container {
+  .page-type {
+    font-size: 12px;
+  }
+
+  .podcast-title-fa {
+    font-size: 40px;
+    font-weight: 900;
+  }
+
+  .follow-btn {
+    font-size: 15px;
+  }
+}
+
+::ng-deep .shrink-medium {
+  .podcast-title-fa {
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  .details-list, .follow-btn, .copy-clipboard {
+    display: none !important;
+  }
+
+  .section-bottom {
+    margin-bottom: 30px;
+  }
+}
+
+::ng-deep .shrink-small {
+  .page-type, .details-list, .follow-btn, .copy-clipboard {
+    display: none !important;
+  }
+
+  .podcast-title-fa {
+    font-size: 20px;
+    font-weight: 600;
+  }
+}
+
+// global
+.title {
+  color: $light;
+}
+
+.more-dot {
+  margin: 0 2px;
+}
+
+.copy-clipboard {
+  .dropdown-toggle {
+    color: $light;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  a {
+    cursor: pointer;
+  }
+}
+
+.details-list {
+  font-size: 12px;
+  @media (max-width: 767.98px) {
+    font-size: 11px;
+  }
+}
+
+.about-podcast {
+  color: $light;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 13px;
+    opacity: 0.6;
+    text-align: justify;
+    line-height: 25px;
+  }
+}
+
+.show-list {
+  padding: 20px 15px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 115px auto;
+
+  &:not(:last-child) {
+    border-bottom: 0.5px solid rgb($light, 0.1);
+  }
+
+  &:hover, &.active {
+    background: linear-gradient(180deg, rgba($light, 0.06), rgba($light, 0.15));
+    border-bottom: 0.5px solid rgb($light, 0);
+  }
+}
+
+.show-thumbnail {
+
+  img {
+    width: 115px;
+  }
+}
+
+.show-content {
+  color: $light;
+
+  a {
+    cursor: pointer;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  a {
+    color: inherit;
+    font-size: 12px;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  span {
+    color: inherit;
+    font-size: 12px;
+  }
+
+  p {
+    opacity: 0.7;
+    font-size: 12px;
+    text-align: justify;
+    height: 42px;
+    overflow-y: scroll;
+    padding-left: 10px;
+
+    /* width */
+    &::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: rgba($darkGray, 0.8);
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: $darkGray;
+    }
+  }
+}

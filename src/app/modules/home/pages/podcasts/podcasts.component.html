@@ -1,0 +1,39 @@
+<app-home-go-back></app-home-go-back>
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0">
+      پادکست ها
+    </h2>
+    <div class="carousel-container container-fluid content-padding my-4">
+      <div class="row">
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center flex-wrap px-2"><!--  slide -->
+          <div *ngFor="let podcast of (podcasts$ | async); let i = index; trackBy: trackByFunc"
+               class="podcast-element mx-2"><!-- item -->
+            <a (click)="shortLink('/podcast', podcast.slug_id)"
+               [routerLink]="['/podcast', podcast.slug_id, podcast.slug]"
+               class="carousel-thumbnail podcast-thumbnail text-decoration-none">
+              <img crossorigin="anonymous"
+                   src="{{podcast.thumbnail}}" [alt]="podcast.title_en">
+            </a>
+            <div class="carousel-info carousel-podcast-info mt-2 text-center pb-3 px-2">
+              <a (click)="shortLink('/podcast', podcast.slug_id)"
+                 [routerLink]="['/podcast', podcast.slug_id, podcast.slug]"
+                 class="text-decoration-none"><b>{{toPersian(podcast.title_fa ? podcast.title_fa : podcast.title_en)}}</b></a>
+            </div>
+          </div><!-- /item -->
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <button
+        class="btn btn-sm btn-orange"
+        type="button"
+        (click)="loadMore()"
+        [disabled]="buttonLoading$ | async">
+        <span [hidden]="!(buttonLoading$ | async)" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+        بارگذاری بیشتر
+      </button>
+    </div>
+  </div>
+</div>

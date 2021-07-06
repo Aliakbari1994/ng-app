@@ -1,0 +1,40 @@
+<app-auth-layout>
+  <app-auth-navbar>
+    <span navbar-text>قبلاً ثبت نام کرده اید؟</span>
+    <a class="text-decoration-none" navbar-link [routerLink]="['/auth/sign-in']">ورود</a>
+  </app-auth-navbar>
+  <main class="d-flex align-items-center justify-content-center flex-grow-1 m-0 p-0">
+    <div class="auth-content m-lg-0">
+      <app-auth-form-header>
+        <span main-header-text>ثبت نام در اسکنت مدیا</span>
+      </app-auth-form-header>
+      <app-auth-form>
+        <form accept-charset="UTF-8" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form-fields">
+            <!-- form field content -->
+            <fieldset>
+              <label for="verification-code">
+                کد تأیید کاربر
+                <a class="text-left text-decoration-none" (click)="resendCode()">ارسال مجدد</a>
+              </label>
+              <input type="text" id="verification-code"
+                     class="text-input"
+                     dir="ltr"
+                     placeholder="کد ۶ رقمی ارسال شده به ایمیل یا موبایل"
+                     maxlength="6"
+                     formControlName="code"
+                     autofocus>
+              <p class="mt-1 mb-0">
+                کد تأیید، از زمان ارسال تنها ۵ دقیقه اعتبار دارد.
+              </p>
+            </fieldset>
+          </div>
+          <button type="submit" class="form-btn btn d-block border-0" [disabled]="!form.valid">تکمیل ثبت نام</button>
+        </form>
+        <!-- form content link -->
+        <span form-text>قبلاً ثبت نام کرده اید؟</span>
+        <a class="text-decoration-none" form-link [routerLink]="['/auth/sign-in']">ورود</a>
+      </app-auth-form>
+    </div>
+  </main>
+</app-auth-layout>

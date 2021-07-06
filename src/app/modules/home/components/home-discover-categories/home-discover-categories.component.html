@@ -1,0 +1,24 @@
+<div class="carousel-container container-fluid">
+  <div class="d-flex justify-content-center my-5"  *ngIf="(categories$ | async).loading">
+    <div class="spinner-border text-white" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div class="row" *ngIf="! (categories$ | async).loading">
+    <div class="carousel-slide col-12 p-0 mt-3 d-flex align-items-center"><!--  slide -->
+     <a [routerLink]="['/browse', category.slug]" class="cat-section carousel-element element-slider"
+        *ngFor="let category of (categories$ | async).categories ; let i = index; trackBy: trackByFunc">
+       <img [src]="category.thumbnail" [alt]="category.title_en">
+     </a>
+    </div><!--  slide -->
+    <div class="carousel-arrow arrow-cat col-12 p-0"><!-- arrow -->
+      <button class="slide-right btn" id="slide-right-featured-categories" type="button">
+        <i class="tio-chevron-right"></i>
+      </button>
+      <button class="slide-left btn" id="slide-left-featured-categories" type="button">
+        <i class="tio-chevron-left"></i>
+      </button>
+    </div><!-- /arrow -->
+  </div>
+</div>
+

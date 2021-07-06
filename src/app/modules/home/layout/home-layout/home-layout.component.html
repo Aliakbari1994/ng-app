@@ -1,0 +1,129 @@
+<app-home-top-bar></app-home-top-bar>
+<div class="container-fluid p-0">
+  <div #sidebar class="bal-sidebar d-none acrylic-medium"><!-- sidebar -->
+    <div class="row mx-0 h-100">
+      <div class="col-md-12 px-0"><!-- header -->
+        <div class="header">
+          <a [routerLink]="['/']" class="d-none d-md-block text-decoration-none logo">
+            <img src="/assets/images/logo.png"
+                 alt="لوگو اسکنت مدیا">
+            <span>اسکنت مدیا</span>
+          </a>
+          <a (click)="sidebarToggle()" class="toggle text-decoration-none">
+            <i class="tio-menu-hamburger"></i>
+          </a>
+        </div>
+      </div><!-- header -->
+      <div class="col-md-12 px-0 position-relative"><!-- nav links -->
+        <nav class="link-group">
+          <a [routerLink]="['/']"
+             [routerLinkActive]="['active']"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-block">
+            <i class="tio-dashboard-vs-outlined"></i>
+            <span class="position-relative">ویترین</span>
+          </a>
+          <a [routerLink]="['/search']"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-none d-md-block">
+            <i class="tio-search"></i>
+            <span class="position-relative">جستجو</span>
+          </a>
+          <a
+            [routerLink]="['/charts']"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{exact: true}"
+            class="text-decoration-none d-block">
+            <i class="tio-chart-bar-1"></i>
+            <span class="position-relative">قطعه های برتر</span>
+          </a>
+          <hr>
+          <a [routerLink]="['/musics']"
+             [routerLinkActive]="['active']"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-block">
+            <i class="tio-music"></i>
+            <span class="position-relative">آرشیو موسیقی</span>
+          </a>
+          <a [routerLink]="['/genre']"
+             [routerLinkActive]="['active']"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-block">
+            <i class="tio-discover"></i>
+            <span class="position-relative">ژانر و سبک</span>
+          </a>
+          <a [routerLink]="['/browse']"
+             [routerLinkActive]="['active']"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-block">
+            <i class="tio-disc"></i>
+            <span class="position-relative">پلی لیست ها</span>
+          </a>
+          <a [routerLink]="['/podcasts']"
+             [routerLinkActive]="['active']"
+             [routerLinkActiveOptions]="{exact: true}"
+             class="text-decoration-none d-block">
+            <i class="tio-podcast"></i>
+            <span class="position-relative">پادکست ها</span>
+          </a>
+        </nav>
+      </div><!-- /nav links -->
+      <div class="col-md-12 px-0 mt-auto mb-4 mb-md-0"><!-- bottom nav -->
+        <hr>
+        <div class="terms">
+          <a *ngIf="(isLoggedIn$ | async)" [routerLink]="['/user', (currentUser$ | async)?.username]"
+             class="text-decoration-none d-block">
+            <img src="{{(currentUser$ | async)?.avatar ? (currentUser$ | async)?.avatar : 'assets/images/avatar.jpg'}}"
+                 class="rounded-circle"
+                 alt="avatar">
+            <span>{{(currentUser$ | async)?.name}}</span>
+          </a>
+          <a *ngIf="!(isLoggedIn$ | async)" [routerLink]="['/auth/sign-in']" class="text-decoration-none d-block">
+            <img src="assets/images/avatar.jpg"
+                 class="rounded-circle"
+                 alt="avatar">
+            <span>ورود / عضویت</span>
+          </a>
+        </div>
+        <hr>
+      </div><!-- /bottom nav -->
+    </div>
+  </div><!-- /sidebar -->
+  <div #content class="content"><!-- page content -->
+    <app-page-loading [hidden]="!(loading$ | async)"></app-page-loading>
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative message-alert">
+      <div class="toast-container position-fixed top-0 end-0 mt-5 mt-md-0 pt-5 pt-md-3 p-3">
+        <div [hidden]="!(message$ | async)">
+          <div class="toast showing align-items-center" role="alert" aria-live="assertive" aria-atomic="true"
+               (click)="removeMessage()">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{message$ | async}}
+              </div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
+                      (click)="removeMessage()"></button>
+            </div>
+          </div>
+        </div>
+
+        <div [hidden]="!(error$ | async)">
+          <div class="toast text-white bg-danger showing align-items-center" role="alert" aria-live="assertive"
+               aria-atomic="true" (click)="removeError()">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{error$ | async}}
+              </div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"
+                      (click)="removeError()"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </div><!-- /page content -->
+</div>
+<app-home-player></app-home-player>
+<app-home-bottom-bar></app-home-bottom-bar>

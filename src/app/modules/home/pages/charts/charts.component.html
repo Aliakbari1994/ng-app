@@ -1,0 +1,175 @@
+<app-home-go-back></app-home-go-back>
+<ul class="charts-head nav mb-3 d-flex justify-content-around" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-tracks-tab" data-bs-toggle="pill" data-bs-target="#pills-tracks"
+            type="button"
+            role="tab" aria-controls="pills-tracks" aria-selected="true">محبوبترین قطعات
+    </button>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-tracks" role="tabpanel" aria-labelledby="pills-tracks-tab">
+    <form class="row mx-0 p-2 g-1 justify-content-center">
+      <div class="col col-md-auto">
+        <select
+          (change)="changeTopTrackSortBy($event)"
+          class="form-select form-select-sm"
+          aria-label=".form-select-sm order">
+          <option value="play" [selected]="sortBy == 'play'">بیشترین پخش آنلاین</option>
+          <option value="download" [selected]="sortBy == 'download'">بیشترین دانلود</option>
+          <option value="rate" [selected]="sortBy == 'rate'">بیشترین امتیاز</option>
+        </select>
+      </div>
+      <div class="col col-md-auto">
+        <select
+          (change)="changeTopTrackDuration($event)"
+          class="form-select form-select-sm"
+          aria-label=".form-select-sm time">
+          <option value="week" [selected]="duration == 'week'">هفته</option>
+          <option value="month" [selected]="duration == 'month'">ماه</option>
+          <option value="year" [selected]="duration == 'year'">سال</option>
+          <option value="all-time" [selected]="duration == 'all-time'">تمام ادوار</option>
+        </select>
+      </div>
+      <div class="col col-md-auto">
+        <select
+          (change)="changeTopTrackType($event)"
+          class="form-select form-select-sm"
+          aria-label=".form-select-sm type">
+          <option value="persian" [selected]="type == 'persian'">موسیقی ایران</option>
+          <option value="world" [selected]="type == 'world'">موسیقی جهان</option>
+        </select>
+      </div>
+    </form>
+    <hr>
+    <div class="popular-list">
+      <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <ul class="list-group" *ngIf="!(sectionLoading$ | async)">
+        <li
+          *ngFor="let track of (tracks$ | async);let i = index; trackBy: trackByFunc"
+          [class.active]="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'"
+          class="popular-track">
+          <a
+            (click)="shortLink('/track', track.slug_id)"
+            [routerLink]="['/track', track.slug_id, track.slug]"
+            [title]="track.title_en"
+            class="text-decoration-none track-item track-thumbnail">
+            <img class="w-100"
+                 [src]="track.thumbnail"
+                 [alt]="track.slug">
+            <i class="tio-voice"></i>
+          </a>
+          <div class="track-item track-title ms-3">
+            <span class="me-1">{{i + 1 | faNum}}.</span>
+            <a
+              (click)="shortLink('/track', track.slug_id)"
+              [routerLink]="['/track', track.slug_id, track.slug]"
+              [title]="track.title_en"
+              class="text-decoration-none">{{toPersian(track.title_fa)}}</a>
+            <button class="btn ms-3" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+            </button>
+            <button class="btn ms-3" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+              class="tio-play"></i></button>
+            <div class="btn-group dropstart">
+              <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <i class="tio-add"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                  <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                     class="dropdown-item small py-2">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li (click)="setSlugId(track.slug_id)">
+                  <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                     data-bs-target="#playlistModal">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                  <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+              class="tio-download-to"></i></button>
+            <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+              class="tio-download-to"></i></button>
+          </div>
+          <div class="track-item track-buttons">
+            <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+            </button>
+            <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+              class="tio-play"></i></button>
+            <div class="btn-group dropstart">
+              <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <i class="tio-add"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                  <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                     class="dropdown-item small py-2">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                </li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li (click)="setSlugId(track.slug_id)">
+                  <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                     data-bs-target="#playlistModal">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                  <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                    <i class="tio-menu-hamburger"></i>
+                    پلی لیست های من
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+              class="tio-download-to"></i></button>
+            <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+              class="tio-download-to"></i></button>
+          </div>
+          <div class="track-item track-artists ms-3 ms-md-0">
+            <a *ngFor="let artist of track.owner_artists"
+               (click)="shortLink('/artist', artist.slug_id)"
+               class="text-decoration-none"
+               [routerLink]="['/artist', artist.slug_id, artist.slug]"
+               [title]="artist.name_en">{{toPersian(artist.name_fa)}}</a>
+          </div>
+          <div class="track-item track-duration">
+            <span>{{toPersian(timeChangeFormat(track.duration))}}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<app-home-playlist-modal></app-home-playlist-modal>

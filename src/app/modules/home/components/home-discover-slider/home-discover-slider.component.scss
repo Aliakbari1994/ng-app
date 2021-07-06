@@ -1,0 +1,91 @@
+@import "https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css";
+@import "https://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick-theme.css";
+
+::ng-deep .slick-next {
+  left: 10px !important;
+  z-index: 1;
+
+  &:before {
+  }
+}
+
+::ng-deep .slick-prev {
+  right: 10px !important;
+  z-index: 1;
+
+  &:before {
+  }
+}
+
+::ng-deep .slick-dots {
+  bottom: 6px;
+}
+
+::ng-deep .slick-dotted.slick-slider {
+  margin-bottom: 0;
+}
+
+// main slider
+.main-slider {
+  margin-top: -10px;
+}
+
+.main-slider-item {
+  outline: none;
+
+  .item-inner {
+    width: 350px;
+    //height: 166px;
+    height: 300px;
+
+    img {
+      //max-height: 100px;
+      max-height: 130px;
+    }
+  }
+}
+
+@media (min-width: 576px) {
+  .main-slider-item {
+    .item-inner {
+      width: 550px;
+      //height: 261px;
+      height: 350px;
+
+      img {
+        //max-height: 125px;
+        max-height: 145px;
+      }
+    }
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .main-slider-item {
+    .item-inner {
+      width: 700px;
+      height: 335px;
+
+      img {
+        max-height: 130px;
+      }
+    }
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .main-slider-item {
+    outline: none;
+
+    .item-inner {
+      width: 800px;
+      height: 380px;
+
+      img {
+        max-height: 185px;
+      }
+    }
+  }
+}

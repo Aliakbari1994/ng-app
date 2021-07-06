@@ -1,0 +1,98 @@
+<div [hidden]="true" id="a-player" class="d-none"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="player-container acrylic-darker col-12 position-fixed fixed-bottom px-0">
+      <a #gridItem class="player-info grid-item text-decoration-none" (click)="trackPage()">
+        <div class="player-image">
+          <img #cover class="w-100 d-none d-md-block" crossorigin="anonymous">
+        </div>
+        <div class="d-flex align-items-center p-2">
+          <div class="player-title">
+            <div #title class="song-title"></div>
+            <div class="song-artist"><b #artist></b></div>
+          </div>
+        </div>
+      </a>
+      <div #gridItem class="grid-item">
+        <div class="player-controller pt-2 d-flex justify-content-end justify-content-md-center align-items-center">
+          <button #repeatBtn (click)="repeat()"
+                  class="player-btn player-btn-medium mx-md-1 mx-lg-2 d-none d-sm-flex justify-content-center align-items-center">
+            <i #repeatIcon class="tio-repeat"></i>
+          </button>
+          <button (click)="skipNext()"
+                  class="player-btn player-btn-big mx-md-1 mx-lg-2 d-flex justify-content-center align-items-center">
+            <i #next class="tio-skip-next"></i>
+          </button>
+          <button (click)="playPause()"
+                  class="player-btn play-pause mx-md-1 mx-lg-2 d-flex justify-content-center align-items-center">
+            <i #play class="tio-play"></i>
+          </button>
+          <button (click)="skipBack()"
+                  class="player-btn player-btn-big mx-md-1 mx-lg-2 d-flex justify-content-center align-items-center">
+            <i #back class="tio-skip-previous"></i>
+          </button>
+          <button #shuffleBtn (click)="shuffle()"
+                  class="player-btn player-btn-medium mx-md-1 mx-lg-2 d-none d-sm-flex justify-content-center align-items-center">
+            <i class="tio-shuffle"></i>
+          </button>
+        </div>
+      </div>
+      <div #gridItem class="grid-item">
+        <div class="player-volume d-none d-md-block p-3" dir="ltr">
+          <div class="float-end">
+            <button (click)="onNowPlaying()" class="now-playing player-btn ms-2">
+              <i class="tio-more-horizontal"></i>
+            </button>
+            <button (click)="muted()" class="volume-button player-btn player-btn-medium ms-3">
+              <i #volumeBtn class="tio-volume-up"></i>
+            </button>
+            <div #volumeBar
+                 (click)="volumeSeekBar($event)"
+                 class="d-inline-block volume-bar-wrap py-2">
+              <div class="volume-line">
+                <div #volumeFill class="volume-fill">
+                  <span #volumeThumb class="player-thumb"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-md-none"><!-- show in small -->
+          <div class="player-volume float-end pt-3 dropdown">
+            <button (click)="onNowPlaying()" class="now-playing player-btn ms-2">
+              <i class="tio-more-vertical"></i>
+            </button>
+          </div>
+        </div><!-- show in small -->
+      </div>
+      <div #gridItem class="grid-item">
+
+        <div *ngIf="! (player$ | async).playerLoading && (player$ | async).tracks.length"
+             class="player-seekbar d-flex justify-content-center align-items-center mx-2 mx-md-0 py-1">
+          <span #dtime class="player-time me-3"></span>
+          <div #playerBar
+               (click)="seekBar($event)"
+               class="player-bar-wrap d-inline-block m-0">
+            <div class="player-bar position-relative">
+              <span #buffer class="player-loaded buffered-amount position-absolute"></span>
+              <div #played class="player-played position-absolute">
+                <span #playerThumb
+                      (mousedown)="thumbDown()"
+                      (mouseup)="thumbUp()"
+                      class="player-thumb"></span>
+              </div>
+            </div>
+          </div>
+          <span #ptime class="player-time ms-3"></span>
+        </div>
+
+        <div *ngIf="(player$ | async).playerLoading">
+          <div class="stage">
+            <div class="dot-floating"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

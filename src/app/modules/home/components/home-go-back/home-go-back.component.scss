@@ -1,0 +1,15 @@
+@import "src/scss/abstracts/variables";
+
+.go-back {
+  padding: 10px 40px;
+
+  a {
+    cursor: pointer;
+    color: rgba($light, 0.8);
+    font-size: 12px;
+
+    &:hover {
+      color: rgba($light, 1);
+    }
+  }
+}

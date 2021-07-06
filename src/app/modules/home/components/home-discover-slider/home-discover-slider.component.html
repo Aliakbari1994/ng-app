@@ -1,0 +1,18 @@
+<div class="container-fluid">
+  <div class="row"><!-- main slider -->
+    <div class="col-12 p-0">
+      <div class="main-slider" dir="ltr" *ngIf="(slides$ | async).length">
+        <a *ngFor="let slide of (slides$ | async); let i = index; trackBy: trackByFunc"
+           (click)="shortLink('/'+slide.type, slide.slug)"
+           [routerLink]="['/'+slide.type, slide.slug, slide.text]"
+           class="main-slider-item text-decoration-none">
+          <div class="item-inner d-flex align-items-end justify-content-center justify-content-md-end"
+               style="background-image: linear-gradient(to bottom, rgba(245, 246, 252, 0), rgba(0,0,0, 0.73)),
+               url({{slide.image_url}}); background-size: cover;  background-position: center;">
+            <img class="p-3" [src]="slide.label_url" [alt]="slide.text">
+          </div>
+        </a>
+      </div>
+    </div>
+  </div><!-- /main slider -->
+</div>

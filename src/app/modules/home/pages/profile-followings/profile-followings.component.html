@@ -1,0 +1,78 @@
+<app-home-go-back></app-home-go-back>
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0">
+      دنبال شدگان
+    </h2>
+    <div class="carousel-container container-fluid content-padding my-4">
+      <div class="row">
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center flex-wrap">
+          <div *ngFor="let following of (followings$ | async); let i = index; trackBy: trackByFunc"
+               class="carousel-element mb-4"><!-- item -->
+            <ng-container *ngIf="following.type == 'profile'">
+              <a
+                [routerLink]="['/user', following.slug]"
+                [title]="following.name"
+                class="carousel-thumbnail user-thumbnail text-decoration-none"><!-- thumbnail -->
+                <img crossorigin="anonymous"
+                     src="{{following.thumbnail ? following.thumbnail : 'assets/images/avatar.jpg'}}"
+                     alt="{{following.slug}}"
+                     class="carousel-track rounded-circle">
+                <div
+                  class="inner-overlay carousel-track playlist-inner justify-content-center align-items-center"></div>
+              </a><!-- thumbnail -->
+              <div class="carousel-info info-track mt-2 text-center"><!-- info -->
+                <a
+                  [routerLink]="['/user', following.slug]"
+                  [title]="following.slug"
+                  class="text-decoration-none">
+                  <b>{{following.name}}</b>
+                </a>
+                <div class="carousel-artists">
+                  <span>پروفایل</span>
+                </div>
+              </div><!-- info -->
+            </ng-container>
+            <ng-container *ngIf="following.type == 'artist'">
+              <a
+                (click)="shortLink('/artist', following.slug_id)"
+                [routerLink]="['/artist', following.slug_id, following.slug]"
+                [title]="following.name"
+                class="carousel-thumbnail user-thumbnail text-decoration-none"><!-- thumbnail -->
+                <img crossorigin="anonymous"
+                     src="{{following.thumbnail ? following.thumbnail : 'assets/images/avatar.jpg'}}"
+                     alt="{{following.slug}}"
+                     class="carousel-track rounded-circle">
+                <div
+                  class="inner-overlay carousel-track playlist-inner justify-content-center align-items-center"></div>
+              </a><!-- thumbnail -->
+              <div class="carousel-info info-track mt-2 text-center"><!-- info -->
+                <a
+                  (click)="shortLink('/artist', following.slug_id)"
+                  [routerLink]="['/artist', following.slug_id, following.slug]"
+                  [title]="following.slug"
+                  class="text-decoration-none">
+                  <b>{{following.name}}</b>
+                </a>
+                <div class="carousel-artists">
+                  <span>هنرمند</span>
+                </div>
+              </div><!-- info -->
+            </ng-container>
+          </div><!-- item -->
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <button
+        class="btn btn-sm btn-orange"
+        type="button"
+        (click)="loadMore()"
+        [disabled]="buttonLoading$ | async">
+        <span [hidden]="!(buttonLoading$ | async)" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+        بارگذاری بیشتر
+      </button>
+    </div>
+  </div>
+</div>

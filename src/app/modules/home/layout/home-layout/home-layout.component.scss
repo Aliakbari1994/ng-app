@@ -1,0 +1,181 @@
+@import "src/scss/abstracts/variables";
+
+// sidebar
+.bal-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  @media (min-width: 768px) {
+    bottom: 92px;
+  }
+  background-color: rgba($dark, 0.8);
+  z-index: 1000;
+  padding-top: 15px;
+  color: $light;
+  font-size: .9rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $lightGray;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $darkGray;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: darken($darkGray, 10%);
+  }
+
+  i {
+    color: inherit;
+  }
+
+  img {
+    width: 25px;
+  }
+
+  .header {
+    a {
+      color: inherit;
+    }
+
+    .toggle {
+      i {
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  nav {
+    margin-bottom: 20px;
+
+    a {
+      color: inherit;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: rgba(lighten($dark, 10%), 0.5);
+        transition: all 0.3s;
+      }
+    }
+
+    a.active {
+      border-right: 4px solid $green;
+      padding: 0.6rem 1.4rem;
+    }
+  }
+
+  hr {
+    background: rgba($light, 0.1);
+  }
+}
+
+.opened-sidebar {
+  width: 250px;
+  @media (max-width: 249.98px) {
+    width: 90%;
+  }
+  font-weight: 600;
+
+  i {
+    width: 25px;
+    margin-left: 1rem;
+    text-align: center;
+  }
+
+  img {
+    margin-left: 1rem;
+  }
+
+  .header {
+    color: inherit;
+
+    .logo {
+      padding: .6rem 1.6rem;
+    }
+
+    i {
+      padding: .6rem 1.6rem;
+      @media(max-width: 767.98px) {
+        position: relative;
+        top: 10px;
+      }
+    }
+  }
+
+  .link-group {
+    a {
+      padding: .6rem 1.6rem;
+
+      span {
+        top: -3px;
+      }
+    }
+  }
+
+  .terms {
+    a {
+      padding: 0 1.6rem;
+      color: inherit;
+
+      img {
+        margin-left: 1rem;
+      }
+    }
+  }
+
+}
+
+.closed-sidebar {
+  width: 63px;
+
+  span {
+    display: none;
+  }
+
+  a {
+    padding: .6rem 0;
+    text-align: center;
+  }
+
+  i {
+    display: block;
+    margin-bottom: .3rem;
+  }
+
+  .link-group {
+    margin-bottom: 0;
+  }
+}
+
+// main content
+.content {
+  padding-top: 70px;
+  @media (min-width: 768px) {
+    padding-top: 0;
+    padding-bottom: 95px;
+  }
+  padding-bottom: 135px;
+  margin: 0 auto;
+  height: auto;
+}
+
+.bal-full-content-body {
+  padding-right: 250px;
+}
+
+.bal-limited-content-body {
+  padding-right: 63px;
+}
+
+.message-alert {
+  z-index: 2000;
+}

@@ -1,0 +1,27 @@
+<div class="container-fluid">
+  <div class="d-flex justify-content-center my-5" *ngIf="(featured$ | async).loading">
+    <div class="spinner-border text-white" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div class="row m-0" *ngIf="! (featured$ | async).loading"><!-- feature -->
+
+    <a *ngFor="let banner of (featured$ | async).banners; let i = index; trackBy: trackByFunc"
+       [routerLink]="['/'+banner.type, banner.slug]"
+       [ngClass]="i == 2 || i == 4 || i == 6 ? 'col-lg-6' : 'col-lg-3'"
+       class="col-12 text-decoration-none feature-music">
+      <div class="feature-background"
+           style="background:
+           linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(24, 29, 48, 0.2), rgba(24, 29, 48, 0.7)),
+            url({{banner.image_url}}) no-repeat center;
+            background-size: cover">
+      </div>
+      <span class="label">{{banner.label_text}}</span>
+      <div class="feature-detail text-end">
+        <div><b>{{banner.main_text}}</b></div>
+        <div>{{banner.child_text}}</div>
+      </div>
+    </a>
+  </div><!-- /feature -->
+</div>

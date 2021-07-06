@@ -1,0 +1,308 @@
+@import "src/scss/abstracts/variables";
+
+.player-container {
+  display: grid;
+  grid-template-columns: 33.33% auto 33.33%;
+  @media (max-width: 767.98px) {
+    margin-bottom: 38px;
+    grid-template-columns: 55% auto 10%;
+  }
+  grid-gap: 0;
+  background-color: rgba($dark, 0.5);
+  z-index: 998;
+  height: 92px;
+
+  .grid-item {
+    overflow: hidden;
+    padding: 2px;
+
+    &:first-child {
+      grid-row-start: 1;
+      grid-row-end: 5;
+      grid-column: 1 / span 1;
+      @media (max-width: 767.98px) {
+        grid-row-end: 4;
+      }
+      display: grid;
+      grid-template-columns: 92px auto;
+      @media (max-width: 767.98px) {
+        grid-template-columns: 0 auto;
+      }
+      grid-gap: 0;
+      padding: 0;
+    }
+
+    &:nth-child(3) {
+      grid-row-start: 1;
+      grid-row-end: 5;
+      grid-column: 3 / span 1;
+      @media (max-width: 767.98px) {
+        grid-row-end: 4;
+      }
+    }
+
+    &:nth-child(2) {
+      grid-row-start: 1;
+      grid-row-end: 4;
+    }
+
+    &:nth-child(4) {
+      grid-row-start: 4;
+      grid-row-end: 5;
+      @media (max-width: 767.98px) {
+        grid-column: 1 / span 3;
+      }
+    }
+  }
+
+  .player-info {
+    cursor: pointer;
+
+    .player-title {
+      width: 100%;
+      font-size: 14px;
+      color: $light;
+
+      .song-title,
+      .song-artist {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &:hover {
+      background: rgba($dark, 0.1);
+
+      .player-image {
+        img {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+
+  .player-controller {
+    .play-pause {
+      width: 50px;
+      height: 50px;
+      border: 2px solid rgba($light, 0.2);
+      font-size: 30px;
+    }
+  }
+
+  .player-seekbar {
+    color: $light;
+
+    .player-time {
+      font-size: 11px;
+    }
+
+    .player-bar-wrap {
+      padding: 4px 0;
+      cursor: pointer;
+      flex: 1;
+
+      .player-bar {
+        height: 2px;
+        width: 100%;
+        background: rgba($light, 0.2);
+
+        .player-loaded {
+          left: 0;
+          top: 0;
+          bottom: 0;
+          background: rgba($light, 0.2);
+          height: 2px;
+          transition: all .5s ease;
+        }
+
+        .player-played {
+          left: 0;
+          top: 0;
+          bottom: 0;
+          height: 2px;
+          background: $light;
+
+          .player-thumb {
+            margin-top: -7px;
+            margin-right: -9px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.player-volume {
+  margin-top: 0;
+  overflow: hidden;
+
+  .volume-bar-wrap {
+    width: 100px;
+    position: relative;
+    top: 2px;
+    cursor: pointer;
+
+    .volume-line {
+      width: 100%;
+      height: 2px;
+      background: rgba($light, 0.4);
+
+      .volume-fill {
+        height: 2px;
+        background: $light;
+        direction: rtl;
+
+        .player-thumb {
+          margin-left: -8px;
+        }
+      }
+    }
+  }
+}
+
+.player-btn {
+  background-color: transparent;
+  outline: none;
+  color: $light;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid rgba($light, 0);
+  transition: all 0.3s;
+  @media (min-width: 768px) {
+    &:hover {
+      border: 2px solid rgba($light, 0.2);
+      transition: all 0.3s;
+    }
+  }
+
+  &.active {
+    background: rgba($dark, 0.5);
+  }
+}
+
+.player-btn-big {
+  font-size: 22px;
+}
+
+.player-btn-medium {
+  font-size: 18px;
+}
+
+.player-btn-small {
+  font-size: 15px;
+}
+
+.player-thumb {
+  background: $dark;
+  position: absolute;
+  top: 0;
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 3px solid $light;
+
+  &:hover {
+    border: 3px solid rgba($light, 0.5);
+  }
+}
+
+.thumb-move {
+  background: $light !important;
+  transform: scale(1.3)
+}
+
+// loading
+/**
+ * ==============================================
+ * Dot Floating
+ * ==============================================
+ */
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.dot-floating {
+  position: relative;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background-color: $light;
+  color: $light;
+  animation: dotFloating 3s infinite cubic-bezier(0.15, 0.6, 0.9, 0.1);
+}
+
+.dot-floating::before, .dot-floating::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+}
+
+.dot-floating::before {
+  left: -6px;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background-color: $light;
+  color: $light;
+  animation: dotFloatingBefore 3s infinite ease-in-out;
+}
+
+.dot-floating::after {
+  left: -12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  background-color: $light;
+  color: $light;
+  animation: dotFloatingAfter 3s infinite cubic-bezier(0.4, 0, 1, 1);
+}
+
+@keyframes dotFloating {
+  0% {
+    left: calc(-50% - 5px);
+  }
+  75% {
+    left: calc(50% + 105px);
+  }
+  100% {
+    left: calc(50% + 105px);
+  }
+}
+
+@keyframes dotFloatingBefore {
+  0% {
+    left: -50px;
+  }
+  50% {
+    left: -12px;
+  }
+  75% {
+    left: -50px;
+  }
+  100% {
+    left: -50px;
+  }
+}
+
+@keyframes dotFloatingAfter {
+  0% {
+    left: -100px;
+  }
+  50% {
+    left: -24px;
+  }
+  75% {
+    left: -100px;
+  }
+  100% {
+    left: -100px;
+  }
+}

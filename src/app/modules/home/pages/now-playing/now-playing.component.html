@@ -1,0 +1,80 @@
+<app-home-go-back></app-home-go-back>
+
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0 mb-3">
+      لیست در حال پخش
+    </h2>
+  </div>
+  <div class="popular-list">
+    <div class="d-flex justify-content-center my-5" *ngIf="(player$ | async).playerLoading">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <ul class="list-group" *ngIf="!(player$ | async).playerLoading">
+      <li
+        *ngFor="let track of (player$ | async).tracks;let i = index; trackBy: trackByFunc"
+        [class.active]="(playerNowPlaying$ | async)?.slug == track.slug"
+        class="popular-track">
+        <ng-container *ngIf="track.playable == 'track'">
+          <a
+            [routerLink]="['/track', track.slug]"
+            [title]="track.name"
+            class="text-decoration-none track-item track-thumbnail">
+            <img class="w-100"
+                 [src]="track.cover"
+                 [alt]="track.slug">
+            <i class="tio-voice"></i>
+          </a>
+          <div class="track-item track-title ms-3">
+            <a
+              [routerLink]="['/track', track.slug]"
+              [title]="track.name"
+              class="text-decoration-none">{{toPersian(track.name)}}</a>
+            <button class="btn ms-3" (click)="playTrack(track.slug)"><i class="tio-play"></i></button>
+            <button class="btn" (click)="remove(track.slug, track.id)"><i class="tio-remove"></i></button>
+            <button class="btn" (click)="downloadTrack(track.slug)"><i class="tio-download-to"></i></button>
+          </div>
+          <div class="track-item track-buttons">
+            <button class="btn" (click)="playTrack(track.slug)"><i class="tio-play"></i></button>
+            <button class="btn" (click)="remove(track.slug, track.id)"><i class="tio-remove"></i></button>
+            <button class="btn" (click)="downloadTrack(track.slug)"><i class="tio-download-to"></i></button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="track.playable == 'episode'">
+          <a
+            [routerLink]="['/podcast', track.podcastSlug]"
+            [title]="track.name"
+            class="text-decoration-none track-item track-thumbnail">
+            <img class="w-100"
+                 [src]="track.cover"
+                 [alt]="track.slug">
+            <i class="tio-voice"></i>
+          </a>
+          <div class="track-item track-title ms-3">
+            <a
+              [routerLink]="['/podcast', track.podcastSlug]"
+              [title]="track.name"
+              class="text-decoration-none">{{toPersian(track.name)}}</a>
+            <button class="btn ms-3" (click)="playEpisode(track.slug)"><i class="tio-play"></i></button>
+            <button class="btn" (click)="remove(track.slug, track.id)"><i class="tio-remove"></i></button>
+            <button class="btn" (click)="downloadEpisode(track.slug)"><i class="tio-download-to"></i></button>
+          </div>
+          <div class="track-item track-buttons">
+            <button class="btn ms-3" (click)="playEpisode(track.slug)"><i class="tio-play"></i></button>
+            <button class="btn" (click)="remove(track.slug, track.id)"><i class="tio-remove"></i></button>
+            <button class="btn" (click)="downloadEpisode(track.slug)"><i class="tio-download-to"></i></button>
+          </div>
+        </ng-container>
+        <div class="track-item track-artists ms-3 ms-md-0">
+          <span>{{toPersian(track.artist)}}</span>
+        </div>
+        <div class="track-item track-duration">
+          <span>{{toPersian(timeChangeFormat(track.duration))}}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<app-home-playlist-modal></app-home-playlist-modal>

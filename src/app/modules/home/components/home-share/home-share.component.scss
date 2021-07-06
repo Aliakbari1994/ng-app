@@ -1,0 +1,25 @@
+@import "src/scss/abstracts/variables";
+
+button {
+  &:focus {
+    box-shadow: none;
+    border: 0;
+  }
+}
+
+.share-btn {
+  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid $red;
+  font-size: 15px;
+  transition: all 0.3s;
+  color: $red;
+
+  &:hover {
+    transition: all 0.3s;
+    background: $red;
+    color: $light;
+  }
+}

@@ -1,0 +1,105 @@
+<app-home-go-back></app-home-go-back>
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0">
+      آلبوم های هنرمند
+    </h2>
+    <div class="carousel-container container-fluid content-padding my-4">
+      <div class="row">
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center flex-wrap">
+          <div *ngFor="let album of (albums$ | async); let i = index; trackBy: trackByFunc"
+               class="carousel-element"><!-- item -->
+            <a
+              (click)="shortLink('/album', album.slug_id)"
+              [routerLink]="['/album', album.slug_id, album.slug]"
+              [title]="album.slug"
+              class="carousel-thumbnail text-decoration-none carousel-track"><!-- thumbnail -->
+              <img crossorigin="anonymous"
+                   [src]="album.thumbnail"
+                   [alt]="album.slug"
+                   class="carousel-track">
+              <div class="inner-overlay carousel-track justify-content-center align-items-center"></div>
+              <span class="box-label"><i class="tio-disc"></i></span>
+            </a><!-- thumbnail -->
+            <div class="outer-overlay"><!-- overlay -->
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="(isLoggedIn$ | async)"
+                       (click)="addToNowPlayingAlbum(album.slug_id)">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setAlbumSlugId(album.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item py-2" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="!(isLoggedIn$ | async)"
+                      (click)="alertToSignIn()">
+                <i class="tio-play"></i>
+              </button>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="(isLoggedIn$ | async)"
+                      (click)="playAlbum(album.slug_id)">
+                <i class="tio-play"></i>
+              </button>
+            </div><!-- overlay -->
+            <div
+              [ngClass]="album.type == 'persian' ? 'persian-info' : 'world-info'"
+              class="carousel-info info-track mt-2"><!-- info -->
+              <a
+                (click)="shortLink('/album', album.slug_id)"
+                [routerLink]="['/album', album.slug_id, album.slug]"
+                [title]="album.slug"
+                class="text-decoration-none">
+                <b>{{album.type == 'persian' ? (album.title_fa | faNum) : album.title_en}}</b>
+              </a>
+              <div class="carousel-artists">
+                <a *ngFor="let owner of album.owner_artists; let i = index; trackBy: trackByFunc"
+                   (click)="shortLink('/artist', owner.slug_id)"
+                   [routerLink]="['/artist', owner.slug_id, owner.slug]"
+                   [title]="owner.name_en"
+                   class="text-decoration-none">
+                  {{owner.name_fa ? (owner.name_fa | faNum) : owner.name_en}}
+                </a>
+              </div>
+            </div><!-- info -->
+          </div><!-- /item -->
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <button
+        class="btn btn-sm btn-orange"
+        type="button"
+        (click)="loadMore()"
+        [disabled]="buttonLoading$ | async">
+        <span [hidden]="!(buttonLoading$ | async)" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+        بارگذاری بیشتر
+      </button>
+    </div>
+  </div>
+</div>
+<app-home-playlist-modal></app-home-playlist-modal>

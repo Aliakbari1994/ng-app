@@ -1,0 +1,44 @@
+<div class="container-fluid">
+  <div class="row px-2 px-md-0">
+    <div class="comment-head col-12">
+      <h3 class="my-4">دیدگاه ها</h3>
+    </div>
+    <div class="comment-wrapper col-12 col-md-8 p-0 m-auto">
+      <div class="comment-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <textarea class="form-control border-0" autocomplete="off"
+                  formControlName="body"
+                  placeholder="دیدگاه شما درباره این اثر"></textarea>
+          <button *ngIf="(isLoggedIn$ | async)" type="submit" class="btn" [disabled]="form.invalid"><i class="tio-reply"></i></button>
+          <button *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" type="button" class="btn" [disabled]="form.invalid"><i class="tio-reply"></i></button>
+        </form>
+      </div>
+      <div *ngIf="(comments$ | async).length" class="comment-user">
+        <ul class="comments p-0">
+          <li *ngFor="let comment of (comments$ | async); let i = index; trackBy: trackByFunc" class="my-2 px-3">
+            <a [routerLink]="['/user', comment.username]" class="comment-avatar text-decoration-none rounded-circle float-start me-3">
+              <img class="rounded-circle"
+                   src="{{comment.avatar}}"
+                   alt="{{comment.name}}">
+            </a>
+            <div class="comment-body">
+              <a [routerLink]="['/user', comment.username]" class="text-decoration-none comment-writer">{{comment.name}}</a>
+              <div class="comment-text my-2">
+                {{comment.body | faNum}}
+              </div>
+              <div class="comment-date">
+                <span class="hline"></span>
+                {{comment?.created_at | faNum}}
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="d-flex justify-content-center align-items-center">
+          <button class="btn comments-load my-2 mx-3" type="button" (click)="loadMore()">
+            <span class="ms-2">بارگذاری بیشتر</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

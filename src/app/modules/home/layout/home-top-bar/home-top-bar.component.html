@@ -1,0 +1,17 @@
+<div class="top-nav acrylic-medium navbar navbar-expand-lg row fixed-top nav-section d-md-none"><!-- mobile top navbar -->
+  <div class="container-fluid p-0">
+    <div class="navbar-nav w-100 flex-row">
+      <div class="navbar-custom">
+        <a (click)="sidebarToggle()" class="toggle text-decoration-none d-inline-block"><!-- toggle sidebar -->
+          <i class="tio-menu-hamburger"></i>
+        </a><!-- /toggle sidebar -->
+        <a [routerLink]="['/']" class="logo text-decoration-none d-inline-block"><!-- logo -->
+          <span>اسکنت مدیا</span>
+        </a><!-- /logo -->
+        <a (click)="goBack()" class="backward text-decoration-none d-inline-block position-absolute"><!-- back -->
+          <i class="tio-arrow-backward"></i>
+        </a><!-- /back -->
+      </div>
+    </div>
+  </div>
+</div><!-- /mobile top navbar -->

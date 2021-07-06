@@ -1,0 +1,10 @@
+@import "src/scss/abstracts/variables";
+
+button {
+  &:focus {
+    box-shadow: none;
+    border: 0;
+  }
+}
+
+

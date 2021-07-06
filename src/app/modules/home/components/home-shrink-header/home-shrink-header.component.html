@@ -1,0 +1,22 @@
+<div #headerMain class="header-resize">
+  <div #headerLayer class="row m-0 acrylic-medium">
+    <app-home-go-back></app-home-go-back>
+    <div class="header-container col-12">
+      <div #headerThumbnail
+           class="header-item header-image d-flex justify-content-center justify-content-md-start">
+        <ng-content select="[header-thumbnail]"></ng-content>
+      </div>
+      <div class="header-item header-info text-center text-md-start d-flex">
+        <div class="row">
+          <ng-content select="[header-info-top]"></ng-content>
+          <div class="section-bottom col-12 align-self-end">
+            <ng-content select="[header-info-bottom]"></ng-content>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div #contentFlexible class="content-flexible"><!-- content -->
+  <ng-content select="[content-flexible]"></ng-content>
+</div><!-- /content -->

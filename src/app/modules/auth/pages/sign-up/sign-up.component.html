@@ -1,0 +1,61 @@
+<app-auth-layout>
+  <app-auth-navbar>
+    <span navbar-text>قبلاً ثبت نام کرده اید؟</span>
+    <a class="text-decoration-none" navbar-link [routerLink]="['/auth/sign-in']">ورود</a>
+  </app-auth-navbar>
+  <main class="d-flex align-items-center justify-content-center flex-grow-1 m-0 p-0">
+    <div class="auth-content m-lg-0">
+      <app-auth-form-header>
+        <span main-header-text>ثبت نام در اسکنت مدیا</span>
+        <span main-social-text>ثبت نام از طریق حساب گوگل</span>
+      </app-auth-form-header>
+      <app-auth-form>
+        <form accept-charset="UTF-8" [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="form-fields">
+            <!-- form field content -->
+            <fieldset>
+              <label for="sign-up">ایمیل یا موبایل</label>
+              <input type="text"
+                     id="sign-up"
+                     class="text-input"
+                     dir="ltr"
+                     formControlName="username"
+                     autofocus>
+              <span class="icon"
+                    [class.form-pending]="username.pending"
+                    [class.form-invalid]="username.invalid && (username.dirty || username.touched)"
+                    [class.form-valid]="username.valid && (username.dirty || username.touched)"
+              >
+              </span>
+            </fieldset>
+            <fieldset>
+              <label for="password">
+                گذرواژه
+              </label>
+              <input type="password"
+                     id="password"
+                     class="text-input"
+                     placeholder="حدأقل ۶ کاراکتر (بدون فضای خالی)"
+                     formControlName="password"
+                     dir="ltr">
+            </fieldset>
+            <fieldset>
+              <input type="checkbox"
+                     formControlName="agreeTerms"
+                     id="agree-terms">
+              <label for="agree-terms" class="checkbox-label d-inline">
+                با
+                <a class="text-decoration-none">شرایط و قوانین</a>
+                اسکنت مدیا موافقت دارم.
+              </label>
+            </fieldset>
+          </div>
+          <button type="submit" class="form-btn btn d-block border-0" [disabled]="!form.valid">ثبت نام</button>
+        </form>
+        <!-- form content link -->
+        <span form-text>قبلاً ثبت نام کرده اید؟</span>
+        <a class="text-decoration-none" form-link [routerLink]="['/auth/sign-in']">ورود</a>
+      </app-auth-form>
+    </div>
+  </main>
+</app-auth-layout>

@@ -1,0 +1,69 @@
+<app-page-loading [hidden]="!(loading$ | async)"></app-page-loading>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="notice error fixed-bottom col-12" [hidden]="!(error$ | async)"><!-- form error -->
+      <h2 class="text-center font-weight-bold">
+        <i class="tio-error"></i>
+        {{error$ | async}}
+      </h2>
+    </div><!-- /form error -->
+    <div class="notice success fixed-bottom col-12" [hidden]="!(message$ | async)"><!-- form success -->
+      <h2 class="text-center font-weight-bold">
+        <i class="tio-notifications"></i>
+        {{message$ | async}}
+      </h2>
+    </div><!-- /form success -->
+  </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <section class="auth-sidebar col-lg-5 col-xl-4 d-none d-lg-block min-vh-100">
+      <div class="auth-sidebar-content d-flex flex-column justify-content-between h-100">
+        <header>
+          <a routerLink="/" class="logo text-decoration-none">اسکنت مدیا</a>
+          <h1 class="font-weight-bolder">
+            آرشیو بی نظیر از موسیقی ایران و جهان
+          </h1>
+        </header>
+
+        <div class="artwork d-flex flex-column flex-grow-1 justify-content-end">
+          <div class="artwork-image flex-grow-1"></div>
+          <div class="artwork-attribution m-0 text-center">
+            <ul class="p-0">
+              <li class="d-inline-block">
+                <a class="mx-2" target="_blank" href="https://www.facebook.com/SkantMedia" title="instagram">
+                  <i class="tio-instagram"></i>
+                </a>
+              </li>
+              <li class="d-inline-block">
+                <a class="mx-2" target="_blank" href="https://www.facebook.com/SkantMedia/" title="facebook">
+                  <i class="tio-facebook-square"></i>
+                </a>
+              </li>
+              <li class="d-inline-block">
+                <a class="mx-2" target="_blank" href="https://twitter.com/SkantMedia" title="twitter">
+                  <i class="tio-twitter"></i>
+                </a>
+              </li>
+              <li class="d-inline-block">
+                <a class="mx-2" target="_blank" href="https://youtube.com/skantmedia" title="youtube">
+                  <i class="tio-youtube"></i>
+                </a>
+              </li>
+              <li class="d-inline-block">
+                <a class="mx-2" target="_blank" href="https://t.me/skantmedia" title="telegram">
+                  <i class="tio-telegram"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="content col-lg-7 col-xl-8 d-flex flex-column flex-grow-1 flex-shrink-1 overflow-auto">
+      <ng-content></ng-content>
+    </section>
+  </div>
+</div>

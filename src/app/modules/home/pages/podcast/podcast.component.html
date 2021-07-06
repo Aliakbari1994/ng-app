@@ -1,0 +1,115 @@
+<app-home-shrink-header>
+  <img header-thumbnail
+       class="rounded"
+       crossorigin="anonymous"
+       [alt]="(podcast$ | async)?.titleEn"
+       [src]="(podcast$ | async)?.thumbnail">
+  <div header-info-top class="col-12">
+  </div>
+  <ng-container header-info-bottom>
+    <div class="title mb-1">
+      <span class="page-type">پادکست</span>
+      <h2 class="podcast-title-fa">{{ toPersian((podcast$ | async)?.titleFa) }}</h2>
+    </div>
+    <div class="details-list mt-1">
+      <ul class="ps-0">
+        <li
+          class="d-inline-block me-2">{{ (podcast$ | async)?.owner }}
+        </li>
+        •
+        <li class="d-inline-block mx-2">
+          <span>{{ toPersian(makeFriendlyNumber((podcast$ | async)?.followersCount)) }} دنبال کننده</span>
+        </li>
+      </ul>
+    </div>
+    <button class="btn btn-sm follow-btn mt-1" type="button" (click)="onFollow()">
+      <span *ngIf="buttonLoading$ | async" class="spinner-border spinner-border-sm me-2" role="status"
+            aria-hidden="true"></span>
+      <span *ngIf="(podcast$ | async)?.followAction == null">
+        <i class="tio-circle-outlined"></i>
+        دنبال کردن
+      </span>
+      <span *ngIf="(podcast$ | async)?.followAction == 'follow'">
+        <i class="tio-circle-outlined"></i>
+        دنبال کردن
+      </span>
+      <span *ngIf="(podcast$ | async)?.followAction == 'unfollow'" class="px-1">
+        <i class="tio-user-outlined"></i>
+        <i class="tio-done me-1"></i>
+      </span>
+    </button>
+    <div class="dropdown d-inline-block ms-3 copy-clipboard">
+      <button class="btn dropdown-toggle" type="button" id="sharePage" data-bs-toggle="dropdown"
+              aria-expanded="false">
+        <span class="more-dot">•</span>
+        <span class="more-dot">•</span>
+        <span class="more-dot">•</span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="sharePage">
+        <li><a class="dropdown-item small" data-bs-toggle="modal" data-bs-target="#shareModal">اشتراک گذاری</a></li>
+      </ul>
+    </div>
+  </ng-container>
+  <ng-container content-flexible>
+    <div class="no-item" [hidden]="podcastEpisodes.episodes.length">
+      <i class="tio-error-outlined me-3"></i>
+      هنوز قسمتی برای این پادکست ثبت نشده است.
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 col-lg-4 mt-lg-3 order-0 order-lg-1 about-podcast">
+          <h3>درباره پادکست</h3>
+          <p class="mt-2">
+            {{ toPersian((podcast$ | async)?.info)}}
+          </p>
+        </div>
+        <div class="col-12 col-lg-8">
+          <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <ul class="list-group" *ngIf="!(sectionLoading$ | async)">
+            <li class="show-list"
+                *ngFor="let episode of podcastEpisodes.episodes; let i = index; trackBy: trackByFunc"
+                [class.active]="(playerNowPlaying$ | async)?.slug == episode.slug_id && (playerNowPlaying$ | async)?.playable == 'podcast'"
+            >
+              <div class="show-thumbnail">
+                <img class="rounded"
+                     src="{{episode.thumbnail}}"
+                     alt="{{episode.title_en}}">
+              </div>
+              <div class="show-content ps-3">
+                <h3>قسمت {{toPersian(episode.episode_number)}}. {{toPersian(episode.title_fa)}}</h3>
+                <p>
+                  {{toPersian(episode.info)}}
+                </p>
+                <div>
+                  <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="text-decoration-none me-2">
+                    <i class="tio-play"></i>
+                    پخش
+                  </a>
+                  <a *ngIf="(isLoggedIn$ | async)" class="text-decoration-none me-2" (click)="playEpisode(episode.slug_id)">
+                    <i class="tio-play"></i>
+                    پخش
+                  </a>
+                  <a class="text-decoration-none" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                    <i class="tio-download-to"></i>
+                    دانلود
+                  </a>
+                  <a class="text-decoration-none" *ngIf="(isLoggedIn$ | async)" (click)="download(episode.slug_id)">
+                    <i class="tio-download-to"></i>
+                    دانلود
+                  </a>
+                  <span class="float-end">{{toPersian(timeChangeFormat(episode.duration))}}</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <app-home-comments [commentableType]="'podcast'" [commentableId]="slugId"></app-home-comments>
+  </ng-container>
+</app-home-shrink-header>
+<app-home-share [url]="url"></app-home-share>

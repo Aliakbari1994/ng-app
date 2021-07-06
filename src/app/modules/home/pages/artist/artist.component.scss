@@ -1,0 +1,63 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .header-container {
+  .title-fa {
+    font-size: 18px;
+  }
+
+  .title-en {
+    font-size: 14px;
+  }
+}
+
+::ng-deep .shrink-medium {
+  .follow-btn, .details-list, .genres {
+    display: none !important;
+  }
+
+  .title {
+    margin-top: 15px !important;
+  }
+
+  .greedy {
+    top: -15px !important;
+  }
+
+}
+
+::ng-deep .shrink-small {
+  .follow-btn, .details-list, .genres, .greedy {
+    display: none !important;
+  }
+
+  .title-fa {
+    font-size: 14px;
+  }
+
+  .title-en {
+    font-size: 12px;
+  }
+}
+
+// global
+.title {
+  color: $light;
+
+  .title-fa {
+    font-weight: bolder;
+  }
+
+  .title-en {
+    opacity: 0.7;
+  }
+}
+
+.details-list {
+  font-size: 11px;
+}
+
+.dropdown-menu {
+  a {
+    cursor: pointer;
+  }
+}

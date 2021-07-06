@@ -1,0 +1,26 @@
+@import "src/scss/abstracts/variables";
+
+.charts-head {
+  color: $light;
+  background: $dark;
+  font-size: 13px;
+
+  li {
+    button {
+      color: inherit;
+      background: transparent;
+      border: none;
+      opacity: 0.6;
+    }
+
+    button.active {
+      opacity: 1;
+    }
+  }
+}
+
+.dropdown-menu {
+  a {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,9 @@
+@import "src/scss/abstracts/variables";
+
+.btn-orange {
+  background: $orange;
+  transition: all 0.3s;
+  &:hover {
+    background: rgb($orange, 0.8);
+  }
+}

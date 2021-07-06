@@ -1,0 +1,23 @@
+@import "src/scss/abstracts/variables";
+
+.auth-nav {
+  padding: 30px 30px 0;
+}
+
+.back-link {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e0e0e0;
+  color: $dark;
+  opacity: 0.7;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.auth-link {
+  color: $dark;
+  font-size: 14px;
+}

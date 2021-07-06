@@ -1,0 +1,342 @@
+<app-home-shrink-header>
+  <img header-thumbnail
+       crossorigin="anonymous"
+       [alt]="playlist.title"
+       [src]="playlist.thumbnail ? playlist.thumbnail : 'assets/images/default-playlist.png'">
+  <img header-thumbnail
+       crossorigin="anonymous"
+       [alt]="playlist.title"
+       [src]="playlist.thumbnail ? playlist.thumbnail : 'assets/images/default-playlist.png'">
+  <img header-thumbnail
+       crossorigin="anonymous"
+       [alt]="playlist.title"
+       [src]="playlist.thumbnail ? playlist.thumbnail : 'assets/images/default-playlist.png'">
+  <div header-info-top class="col-12">
+  </div>
+  <ng-container header-info-bottom>
+    <div class="title mb-1">
+      <span class="page-type">پلی لیست</span>
+      <h2 class="playlist-title-fa">{{ toPersian(playlist.title)}}</h2>
+    </div>
+    <div class="details-list mt-3">
+      <ul class="ps-0">
+        <li class="d-inline-block me-2">
+          ایجاد شده توسط
+          <a *ngIf="playlist.creatorId == null"
+             class="text-decoration-none">{{ toPersian(playlist.creatorName)}}</a>
+          <a *ngIf="playlist.creatorId != null" [routerLink]="['/user', playlist.creatorId]"
+             class="text-decoration-none">{{ toPersian(playlist.creatorName)}}</a>
+        </li>
+        •
+        <li class="d-inline-block mx-2">{{toPersian(playlist.tracksCount)}} قطعه</li>
+        •
+        <li class="d-inline-block ms-2">{{toPersian(timeChangeFormat(playlist.duration))}}</li>
+      </ul>
+    </div>
+    <app-home-greedy-nav>
+      <nav class='greedy mt-2'>
+        <ul class='links'>
+          <li>
+            <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+            <a *ngIf="(isLoggedIn$ | async)" (click)="play()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+          </li>
+          <li>
+            <div class="position-relative">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="tio-add"></i>
+                افزودن به
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item small" *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlaying()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                  <a class="dropdown-item small" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li *ngIf="playlist.buttonStatus == 'remove'">
+            <a (click)="removePlaylist()">
+              <i class="tio-delete"></i>
+              حذف
+            </a>
+          </li>
+          <li *ngIf="playlist.buttonStatus == 'remove'">
+            <a href='#' data-bs-toggle="modal" data-bs-target="#updatePlaylistModal">
+              <i class="tio-edit"></i>
+              ویرایش
+            </a>
+          </li>
+          <li *ngIf="playlist.type == 'public'">
+            <a href='#' data-bs-toggle="modal" data-bs-target="#shareModal">
+              <i class="tio-share"></i>
+              اشتراک گذاری
+            </a>
+          </li>
+        </ul>
+        <button><span class="tio-more-horizontal"></span></button>
+        <ul class='hidden-links hidden'></ul>
+      </nav>
+    </app-home-greedy-nav>
+  </ng-container>
+  <ng-container content-flexible>
+    <ul class="custom-nav nav m-3 justify-content-center" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block active" id="pills-track-list-tab" data-bs-toggle="pill"
+           href="#pills-track-list" role="tab"
+           aria-controls="pills-credits" aria-selected="true">لیست قطعات</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block" id="pills-credits-tab" data-bs-toggle="pill"
+           href="#pills-credits" role="tab"
+           aria-controls="pills-credits" aria-selected="true">مشخصات قطعه</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="text-decoration-none d-block" id="pills-lyrics-tab" data-bs-toggle="pill" href="#pills-lyrics"
+           role="tab"
+           aria-controls="pills-lyrics" aria-selected="true">ترانه قطعه</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show nav-content active" id="pills-track-list" role="tabpanel"
+           aria-labelledby="pills-track-list-tab">
+        <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <ul class="list-group" *ngIf="!(sectionLoading$ | async)">
+          <div class="no-item" [hidden]="playlistTracks.tracks.length">
+            <i class="tio-error-outlined me-3"></i>
+            هنوز قطعه ای برای این پلی لیست ثبت نشده است.
+          </div>
+          <li *ngFor="let track of playlistTracks.tracks;let i = index; trackBy: trackByFunc"
+              [class.active]="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'"
+              class="track-list list-artists">
+            <div class="track-item track-title">
+              <span class="me-1 voice-icon"><i class="tio-voice"></i></span>
+              <a
+                (click)="shortLink('/track', track.slug_id)"
+                [routerLink]="['/track', track.slug_id, track.slug]"
+                class="text-decoration-none"
+                [title]="track.title_en">{{toPersian(track.title_fa)}}</a>
+              <button class="btn ms-3" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn ms-3" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div *ngIf="playlist.buttonStatus == 'add'" class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"> class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button *ngIf="playlist.buttonStatus == 'remove'" class="btn" (click)="removeTrack(track.slug_id)"><i
+                class="tio-remove"></i></button>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-buttons">
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div *ngIf="playlist.buttonStatus == 'add'" class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"> class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button *ngIf="playlist.buttonStatus == 'remove'" class="btn" (click)="removeTrack(track.slug_id)"><i
+                class="tio-remove"></i></button>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-artists">
+              <a *ngFor="let artist of track.owner_artists"
+                 (click)="shortLink('/artist', artist.slug_id)"
+                 class="text-decoration-none"
+                 [routerLink]="['/artist', artist.slug_id, artist.slug]"
+                 [title]="artist.name_en">{{toPersian(artist.name_fa)}}</a>
+            </div>
+            <div class="track-item track-duration">
+              <span>{{toPersian(timeChangeFormat(track.duration))}}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-pane fade show nav-content" id="pills-credits" role="tabpanel"
+           aria-labelledby="pills-credits-tab">
+        <ng-container *ngFor="let track of playlistTracks.tracks; let i = index; trackBy: trackByFunc">
+          <ul class="list-group"
+              [class.d-none]="(playerNowPlaying$ | async)?.slug != track.slug_id">
+            <li *ngIf="track.singer_artists.length" class="custom-list">
+              <span>خواننده : </span>
+              <a *ngFor="let artist of track.singer_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.lyricist_artists.length" class="custom-list">
+              <span>ترانه : </span>
+              <a *ngFor="let artist of track.lyricist_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.music_artists.length" class="custom-list">
+              <span>موسیقی : </span>
+              <a *ngFor="let artist of track.music_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.instrumentalist_artists.length" class="custom-list">
+              <span>نوازندگان : </span>
+              <a *ngFor="let artist of track.instrumentalist_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none"
+                 [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.arrangement_artists.length" class="custom-list">
+              <span>تنظیم : </span>
+              <a *ngFor="let artist of track.arrangement_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+            <li *ngIf="track.mix_master_artists.length" class="custom-list">
+              <span>میکس و مستر : </span>
+              <a *ngFor="let artist of track.mix_master_artists"
+                 [routerLink]="['/crew', artist.slug]"
+                 class="text-decoration-none" [title]="artist.name_en">{{artist.name_fa}}</a>
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+      <div class="tab-pane fade show nav-content lyrics text-center" id="pills-lyrics" role="tabpanel"
+           aria-labelledby="pills-lyrics-tab">
+        <ng-container *ngFor="let track of playlistTracks.tracks; let i = index; trackBy: trackByFunc">
+          <ng-container
+            *ngIf="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'">
+            <div [hidden]="!track.lyrics.length" [innerHTML]="track.lyrics | faNum"></div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</app-home-shrink-header>
+<app-home-share [url]="url"></app-home-share>
+<app-home-playlist-modal></app-home-playlist-modal>
+<!-- Update Playlist Modal -->
+<div class="modal fade" id="updatePlaylistModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateModalLabel">ویرایش پلی لیست</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form accept-charset="UTF-8" [formGroup]="form" (ngSubmit)="onUpdate()">
+        <div class="modal-body">
+          <div class="row form-group">
+            <div class="col-12">
+              <input type="text" formControlName="title"
+                     class="form-control form-control-sm"
+                     [class.is-invalid]="title.invalid && (title.dirty || title.touched)" id="title">
+            </div>
+            <div class="col-12 my-2">
+              <div class="form-check form-switch">
+                <input class="form-check-input"
+                       formControlName="type"
+                       type="checkbox"
+                       id="switchPublic"
+                       [checked]="playlist.type == 'public'">
+                <label class="form-check-label" for="switchPublic">نمایش بصورت عمومی</label>
+              </div>
+            </div>
+            <div class="col-12 my-2">
+              <div class="form-check form-switch">
+                <input class="form-check-input"
+                       formControlName="featured"
+                       type="checkbox"
+                       id="switchFeature"
+                       [checked]="playlist.featured">
+                <label class="form-check-label" for="switchFeature">نمایش در ویژه ها</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">انصراف</button>
+          <button type="submit" class="btn btn-sm btn-orange" [disabled]="!form.valid">ثبت تغییرات</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

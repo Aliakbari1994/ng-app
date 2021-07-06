@@ -1,0 +1,24 @@
+<app-home-go-back></app-home-go-back>
+
+<div class="container-fluid">
+  <div class="row">
+    <h2 class="head-title content-padding mt-2 mt-lg-0">ژانر و سبک</h2>
+    <div class="content-padding my-3">
+      <a #genrePosts
+         *ngFor="let genre of genres.genres; let i = index; trackBy: trackByFunc"
+         [routerLink]="['/musics']"
+         queryParamsHandling="merge"
+         [queryParams]="{'genre': genre.slug}"
+         class="genre-post rounded m-2"
+         title="{{genre.title_en}}">
+        <div class="overlay-gradient">
+          <h3>{{genre.title_fa}}</h3>
+          <img
+            crossorigin="anonymous"
+            src="{{genre.thumbnail}}"
+            alt="{{genre.title_fa}}">
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

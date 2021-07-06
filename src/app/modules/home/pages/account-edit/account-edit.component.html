@@ -1,0 +1,248 @@
+<app-home-go-back></app-home-go-back>
+<div class="user-form-section col-11 col-md-8 d-flex flex-column bg-gradient rounded m-auto">
+  <h2 class="title mb-4 text-center text-md-start fw-bold">اطلاعات حساب کاربری</h2>
+  <div class="row form-group">
+    <label for="user-avatar" class="col-sm-3 col-form-label input-label mb-2">تصویر کاربری</label>
+    <div class="col-sm-9">
+      <div class="d-flex align-items-center">
+        <label for="user-avatar" class="avatar avatar-uploader rounded-circle me-3">
+          <img class="avatar-img rounded-circle"
+               src="{{currentUser.avatar ? currentUser.avatar : 'assets/images/avatar.jpg'}}" alt="User Avatar">
+          <input id="user-avatar" type="file" class="avatar-uploader-input" (change)="onFileChanged($event)">
+          <span class="avatar-uploader-trigger">
+              <i class="tio-edit avatar-uploader-icon shadow-soft"></i>
+            </span>
+        </label>
+        <button type="button" class="btn btn-sm btn-light" (click)="removeAvatar()">
+          <span *ngIf="buttonLoading$ | async" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          حذف تصویر کاربری
+        </button>
+      </div>
+    </div>
+  </div>
+  <form accept-charset="UTF-8" [formGroup]="formName" (ngSubmit)="onUpdateName()">
+    <div class="row form-group">
+      <label for="name" class="col-sm-3 col-form-label input-label mb-2">
+        نام
+        <button type="submit" class="btn btn-edit text-orange">
+          <i class="tio-edit"></i>
+          ثبت تغییر
+        </button>
+      </label>
+      <div class="col-sm-9">
+        <input type="text" formControlName="name" class="form-control form-control-sm"
+               [class.is-invalid]="name.invalid && (name.dirty || name.touched)" id="name"
+               aria-describedby="nameHelp"
+               [value]="currentUser.name ? (currentUser.name | faNum) : 'نام ثبت نشده است.'">
+        <div id="nameHelp" class="form-text input-help">برای نمایش در پنل کاربری استفاده می شود. (ترجیحاً فارسی و
+          حدأقل سه کاراکتر مجاز است.)
+        </div>
+      </div>
+    </div>
+  </form>
+  <form accept-charset="UTF-8" [formGroup]="formUsername" (ngSubmit)="onUpdateUsername()">
+    <div class="row form-group">
+      <label for="user-name" class="col-sm-3 col-form-label input-label mb-2">
+        نام کاربری
+        <button type="submit" class="btn btn-edit text-orange">
+          <i class="tio-edit"></i>
+          ثبت تغییر
+        </button>
+      </label>
+      <div class="col-sm-9">
+        <input type="text" formControlName="username" class="form-control form-control-sm"
+               [class.is-invalid]="username.invalid && (username.dirty || username.touched)" id="user-name" dir="ltr"
+               aria-describedby="usernameHelpBlock"
+               value="{{currentUser.username ? currentUser.username : 'نام کاربری ثبت نشده است.'}}">
+        <span class="position-absolute" style="margin-top: -30px; margin-right: 5px"
+              [ngClass]="!username.pending ? 'd-none' : ''">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+          </span>
+        <div id="usernameHelp" class="form-text input-help">
+          جهت استفاده در آدرس پروفایل شخصی شما (حروف انگلیسی و اعداد و حدأقل سه کاراکتر مجاز است.)
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row form-group">
+    <label for="user-password" class="col-sm-3 col-form-label input-label mb-2">
+      گذرواژه
+      <button type="button" class="btn btn-edit text-orange" data-bs-toggle="modal"
+              data-bs-target="#editPasswordModal">
+        <i class="tio-edit"></i>
+        ویرایش
+      </button>
+
+      <div class="modal fade" id="editPasswordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form accept-charset="UTF-8" [formGroup]="formPassword" (ngSubmit)="onUpdatePassword()">
+              <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="passwordModalLabel">تغییر گذرواژه</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="current-password" class="col-form-label text-secondary">گذرواژه
+                    فعلی</label>
+                  <input type="password" formControlName="password" class="form-control"
+                         [class.is-invalid]="password.invalid && (password.dirty || password.touched)"
+                         id="current-password" dir="ltr">
+                </div>
+                <div class="mb-3">
+                  <label for="new-password" class="col-form-label text-secondary">گذرواژه
+                    جدید</label>
+                  <input type="password" formControlName="newPassword" class="form-control"
+                         [class.is-invalid]="newPassword.invalid && (newPassword.dirty || newPassword.touched)"
+                         id="new-password" dir="ltr">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-orange" [disabled]="!formPassword.valid">بروزرسانی
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </label>
+    <div class="col-sm-9">
+      <input type="password"
+             class="form-control form-control-sm"
+             id="user-password"
+             value="****************"
+             dir="ltr" readonly disabled>
+    </div>
+  </div>
+  <div class="row form-group">
+    <label for="user-mobile" class="col-sm-3 col-form-label input-label mb-2">
+      موبایل
+      <button type="button" class="btn btn-edit text-orange" data-bs-toggle="modal" data-bs-target="#editMobileModal">
+        <i class="tio-edit"></i>
+        ویرایش
+      </button>
+
+      <div class="modal fade" id="editMobileModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form [formGroup]="formMobile" (ngSubmit)="onUpdateMobile()">
+              <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="mobileModalLabel">تغییر موبایل</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="new-mobile" class="col-form-label text-secondary">موبایل</label>
+                  <input type="text" formControlName="mobile" class="form-control"
+                         [class.is-invalid]="mobile.invalid && (mobile.dirty || mobile.touched)" id="new-mobile"
+                         dir="ltr"
+                         style="padding-left: 75px">
+                  <span class="position-absolute" [ngClass]="!mobile.pending ? 'd-none' : ''"
+                        style="margin-top: -30px; margin-right: 5px">
+                      <span class="spinner-border spinner-border-sm text-secondary" role="status"
+                            aria-hidden="true"></span>
+                      <span class="visually-hidden">Loading...</span>
+                    </span>
+                  <button class="btn btn-sm btn-secondary text-white position-absolute end-0"
+                          [disabled]="mobile.invalid"
+                          (click)="sendUpdateMobileCode()"
+                          style="margin-top: -34px; margin-left: 20px">
+                    ارسال کد
+                  </button>
+                </div>
+                <div class="mb-3">
+                  <label for="code" class="col-form-label text-secondary">کد احرازهویت</label>
+                  <input type="text" formControlName="code" class="form-control"
+                         [class.is-invalid]="mobileCode.invalid && (mobileCode.dirty || mobileCode.touched)"
+                         id="mobileCode"
+                         dir="ltr" aria-describedby="codeHelp">
+                  <div id="mobileCodeHelp" class="form-text input-help">
+                    کد ۶ رقمی ارسال شده به موبایل خود را وارد کنید. این کد از زمان ارسال تا ۵ دقیقه قابل استفاده می
+                    باشد.
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-orange" [disabled]="!formEmail.valid">بروزرسانی</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </label>
+    <div class="col-sm-9">
+      <input type="text" dir="ltr" class="form-control form-control-sm" id="user-mobile"
+             value="{{currentUser.mobile ? (currentUser.mobile| faNum) : 'موبایل ثبت نشده است' }}"
+             readonly disabled>
+    </div>
+  </div>
+  <div class="row form-group">
+    <label for="user-email" class="col-sm-3 col-form-label input-label mb-2">
+      ایمیل
+      <button type="button" class="btn btn-edit text-orange" data-bs-toggle="modal" data-bs-target="#editEmailModal">
+        <i class="tio-edit"></i>
+        ویرایش
+      </button>
+
+      <div class="modal fade" id="editEmailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <form [formGroup]="formEmail" (ngSubmit)="onUpdateEmail()">
+              <div class="modal-header">
+                <h5 class="modal-title text-secondary" id="emailModalLabel">تغییر ایمیل</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="new-email" class="col-form-label text-secondary">ایمیل</label>
+                  <input type="email" formControlName="email" class="form-control"
+                         [class.is-invalid]="email.invalid && (email.dirty || email.touched)" id="new-email" dir="ltr"
+                         style="padding-left: 75px">
+                  <span class="position-absolute" [ngClass]="!email.pending ? 'd-none' : ''"
+                        style="margin-top: -30px; margin-right: 5px">
+                      <span class="spinner-border spinner-border-sm text-secondary" role="status"
+                            aria-hidden="true"></span>
+                      <span class="visually-hidden">Loading...</span>
+                    </span>
+                  <button class="btn btn-sm btn-secondary text-white position-absolute end-0"
+                          [disabled]="email.invalid"
+                          (click)="sendUpdateEmailCode()"
+                          style="margin-top: -34px; margin-left: 20px">
+                    ارسال کد
+                  </button>
+                </div>
+                <div class="mb-3">
+                  <label for="code" class="col-form-label text-secondary">کد احرازهویت</label>
+                  <input type="text" formControlName="code" class="form-control"
+                         [class.is-invalid]="emailCode.invalid && (emailCode.dirty || emailCode.touched)" id="code"
+                         dir="ltr" aria-describedby="codeHelp">
+                  <div id="codeHelp" class="form-text input-help">
+                    کد ۶ رقمی ارسال شده به ایمیل خود را وارد کنید. این کد از زمان ارسال تا ۵ دقیقه قابل استفاده می
+                    باشد.
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-sm btn-orange" [disabled]="!formEmail.valid">بروزرسانی</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </label>
+    <div class="col-sm-9">
+      <input type="text" dir="ltr" class="form-control form-control-sm" id="user-email"
+             value="{{currentUser.email ? currentUser.email : 'موبایل ثبت نشده است' }}"
+             readonly disabled>
+    </div>
+  </div>
+  <div class="row form-group">
+    <button type="button" class="btn btn-sm btn-orange my-1" (click)="onDeactivateAccount()">
+      غیر فعالسازی حساب
+    </button>
+    <div class="form-text input-help">حساب کاربری بلافاصله پس از ورود مجدد، فعال می شود.</div>
+  </div>
+</div>

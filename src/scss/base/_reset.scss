@@ -1,0 +1,17 @@
+@import "src/scss/abstracts/variables";
+
+// reset bootstrap
+.btn:focus {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.dropdown-item:active {
+  color: $light !important;
+  text-decoration: none !important;
+  background-color: $darkGray !important;
+}
+
+.dropdown-item {
+  font-size: 12px!important;
+}

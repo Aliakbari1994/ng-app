@@ -1,0 +1,25 @@
+@import "src/scss/abstracts/variables";
+
+::ng-deep .form-btn {
+  position: relative;
+  width: 100%;
+  @media (min-width: 992px) {
+    max-width: 200px;
+  }
+  color: $light;
+  background: $pink;
+  transition: all 200ms ease;
+  appearance: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  margin-top: 22px;
+
+  &:hover {
+    background-color: lighten($pink, 10%);
+    color: $light;
+  }
+}

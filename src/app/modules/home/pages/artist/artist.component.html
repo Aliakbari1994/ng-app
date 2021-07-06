@@ -1,0 +1,431 @@
+<app-home-shrink-header>
+  <img header-thumbnail
+       crossorigin="anonymous"
+       [src]="artist.thumbnail ? artist.thumbnail : 'assets/images/avatar.jpg'"
+       [alt]="artist.nameEn"
+       class="rounded-circle">
+  <div header-info-top class="col-12">
+    <div class="title">
+      <h2 class="title-fa">{{artist.nameFa | faNum}}</h2>
+      <h2 class="title-en">{{artist.nameEn}}</h2>
+    </div>
+    <button class="btn btn-sm follow-btn mt-1" type="button" (click)="onFollow()">
+      <span *ngIf="buttonLoading$ | async" class="spinner-border spinner-border-sm me-2" role="status"
+            aria-hidden="true"></span>
+      <span *ngIf="artist.followAction == null">
+        <i class="tio-circle-outlined"></i>
+        دنبال کردن
+      </span>
+      <span *ngIf="artist.followAction == 'follow'">
+        <i class="tio-circle-outlined"></i>
+        دنبال کردن
+      </span>
+      <span *ngIf="artist.followAction == 'unfollow'" class="px-1">
+        <i class="tio-user-outlined"></i>
+        <i class="tio-done me-1"></i>
+      </span>
+    </button>
+  </div>
+  <ng-container header-info-bottom>
+    <div class="details-list mt-3">
+      <ul class="ps-0">
+        <li class="d-inline-block me-2">{{artist.type == 'persian' ? 'موسیقی ایران' : 'موسیقی جهان' }}</li>
+        •
+        <li class="d-inline-block mx-2">{{artist.tracksCount | faNum}} قطعه</li>
+        •
+        <li class="d-inline-block ms-2">{{makeFriendlyNumber(artist.followersCount) | faNum}} دنبال کننده</li>
+      </ul>
+      <ul class="ps-0 mt-2 statistic-detail">
+        <li class="d-inline-block me-2">
+          <span>{{makeFriendlyNumber(artist.plays) | faNum}}</span>
+          پخش آنلاین
+        </li>
+        <li class="d-inline-block me-2">
+          <span>{{makeFriendlyNumber(artist.downloads) | faNum}}</span>
+          دانلود
+        </li>
+      </ul>
+    </div>
+    <div class="genres mt-2">
+      <a *ngFor="let genre of artist.genres"
+         [routerLink]="['/musics']"
+         queryParamsHandling="merge"
+         [queryParams]="{'genre': genre.slug}"
+         class="d-inline-block text-decoration-none m-1"
+         [title]="genre.title_en">{{genre.title_fa}}</a>
+    </div>
+    <app-home-greedy-nav>
+      <nav class='greedy mt-3'>
+        <ul class='links'>
+          <li>
+            <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+            <a *ngIf="(isLoggedIn$ | async)" (click)="playArtist()">
+              <i class="tio-play"></i>
+              پخش
+            </a>
+          </li>
+          <li>
+            <div class="position-relative">
+              <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="tio-add"></i>
+                افزودن به
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item small" *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingArtist()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                  <a class="dropdown-item small" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                    <i class="tio-filter-list"></i>
+                    لیست در حال پخش
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <a href='#' data-bs-toggle="modal" data-bs-target="#shareModal">
+              <i class="tio-share"></i>
+              اشتراک گذاری
+            </a>
+          </li>
+        </ul>
+        <button><span class="tio-more-horizontal"></span></button>
+        <ul class='hidden-links hidden'></ul>
+      </nav>
+    </app-home-greedy-nav>
+  </ng-container>
+  <ng-container content-flexible>
+    <div class="mb-2">
+      <h3 class="head-title px-2 my-3 mt-lg-0">
+        محبوبترین ها
+        <form class="row mx-0 p-2 g-1 d-inline-block">
+          <div class="col col-md-auto">
+            <select
+              (change)="changePopularTracks($event)"
+              class="form-select form-select-sm"
+              aria-label=".form-select-sm order">
+              <option value="play">بیشترین پخش آنلاین</option>
+              <option value="download">بیشترین دانلود</option>
+              <option value="rate">بیشترین امتیاز</option>
+            </select>
+          </div>
+        </form>
+      </h3>
+      <div class="popular-list">
+        <div class="d-flex justify-content-center my-5" *ngIf="sectionLoading$ | async">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <ul class="list-group" *ngIf="!(sectionLoading$ | async)">
+          <li
+            *ngFor="let track of (popular$ | async);let i = index; trackBy: trackByFunc"
+            [class.active]="(playerNowPlaying$ | async)?.slug == track.slug_id && (playerNowPlaying$ | async)?.playable == 'track'"
+            class="popular-track">
+            <a
+              (click)="shortLink('/track', track.slug_id)"
+              [routerLink]="['/track', track.slug_id, track.slug]"
+              [title]="track.title_en"
+              class="text-decoration-none track-item track-thumbnail">
+              <img class="w-100"
+                   [src]="track.thumbnail"
+                   [alt]="track.slug">
+              <i class="tio-voice"></i>
+            </a>
+            <div class="track-item track-title ms-3">
+              <span class="me-1">{{i + 1 | faNum}}.</span>
+              <a
+                (click)="shortLink('/track', track.slug_id)"
+                [routerLink]="['/track', track.slug_id, track.slug]"
+                [title]="track.title_en"
+                class="text-decoration-none">{{toPersian(track.title_fa)}}</a>
+              <button class="btn ms-3" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn ms-3" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setTrackSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-buttons">
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i class="tio-play"></i>
+              </button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="playTrack(track.slug_id)"><i
+                class="tio-play"></i></button>
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a *ngIf="(isLoggedIn$ | async)" (click)="addToNowPlayingTrack(track.slug_id)"
+                       class="dropdown-item small py-2">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setTrackSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item small py-2" href="#" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()" class="dropdown-item small py-2">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="btn" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()"><i
+                class="tio-download-to"></i></button>
+              <button class="btn" *ngIf="(isLoggedIn$ | async)" (click)="downloadTrack(track.slug_id)"><i
+                class="tio-download-to"></i></button>
+            </div>
+            <div class="track-item track-artists ms-3 ms-md-0">
+              <span>{{track.publication_year | faNum}}</span>
+            </div>
+            <div class="track-item track-duration">
+              <span>{{toPersian(timeChangeFormat(track.duration))}}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="(albums$ | async)?.length" class="carousel-container container-fluid">
+      <div class="row">
+        <h3 class="head-title my-3 mt-lg-0">
+          آلبوم ها
+          <a [routerLink]="['/artist', slugId, 'albums']" class="text-decoration-none float-end"><i
+            class="tio-arrow-backward"></i></a>
+        </h3>
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center"><!--  slide -->
+          <div *ngFor="let album of (albums$ | async); let i = index; trackBy: trackByFunc"
+               class="carousel-element element-slider"><!-- item -->
+            <a
+              (click)="shortLink('/album', album.slug_id)"
+              [routerLink]="['/album', album.slug_id, album.slug]"
+              [title]="album.slug"
+              class="carousel-thumbnail text-decoration-none carousel-track"><!-- thumbnail -->
+              <img crossorigin="anonymous"
+                   [src]="album.thumbnail"
+                   [alt]="album.slug"
+                   class="carousel-track">
+              <div class="inner-overlay carousel-track justify-content-center align-items-center"></div>
+              <span class="box-label"><i class="tio-disc"></i></span>
+            </a><!-- thumbnail -->
+            <div class="outer-overlay"><!-- overlay -->
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="(isLoggedIn$ | async)"
+                       (click)="addToNowPlayingAlbum(album.slug_id)">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setAlbumSlugId(album.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item py-2" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="!(isLoggedIn$ | async)"
+                      (click)="alertToSignIn()">
+                <i class="tio-play"></i>
+              </button>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="(isLoggedIn$ | async)"
+                      (click)="playAlbum(album.slug_id)">
+                <i class="tio-play"></i>
+              </button>
+            </div><!-- overlay -->
+            <div
+              [ngClass]="album.type == 'persian' ? 'persian-info' : 'world-info'"
+              class="carousel-info info-track mt-2"><!-- info -->
+              <a
+                (click)="shortLink('/album', album.slug_id)"
+                [routerLink]="['/album', album.slug_id, album.slug]"
+                [title]="album.slug"
+                class="text-decoration-none">
+                <b>{{album.type == 'persian' ? (album.title_fa | faNum) : album.title_en}}</b>
+              </a>
+
+              <div class="carousel-artists">
+                {{album.publication_year | faNum}}
+              </div>
+            </div><!-- info -->
+          </div><!-- /item -->
+        </div><!-- /slide -->
+        <div class="carousel-arrow arrow-track col-12 p-0"><!-- arrow -->
+          <button class="slide-right btn" id="slide-right-album" type="button">
+            <i class="tio-chevron-right"></i>
+          </button>
+          <button class="slide-left btn" id="slide-left-album" type="button">
+            <i class="tio-chevron-left"></i>
+          </button>
+        </div><!-- /arrow -->
+      </div>
+    </div>
+    <div *ngIf="(tracks$ | async)?.length" class="carousel-container container-fluid">
+      <div class="row">
+        <h3 class="head-title my-3 mt-lg-0">
+          قطعه ها
+          <a [routerLink]="['/artist', slugId, 'tracks']" class="text-decoration-none float-end"><i
+            class="tio-arrow-backward"></i></a>
+        </h3>
+        <div class="carousel-slide col-12 p-0 mb-4 d-flex align-items-center"><!--  slide -->
+          <div *ngFor="let track of (tracks$ | async); let i = index; trackBy: trackByFunc"
+               class="carousel-element element-slider"><!-- item -->
+            <a
+              (click)="shortLink('/track', track.slug_id)"
+              [routerLink]="['/track', track.slug_id, track.slug]"
+              [title]="track.slug"
+              class="carousel-thumbnail text-decoration-none"><!-- thumbnail -->
+              <img crossorigin="anonymous"
+                   [src]="track.thumbnail"
+                   [alt]="track.slug"
+                   class="carousel-track">
+              <div class="inner-overlay carousel-track justify-content-center align-items-center"></div>
+              <span class="box-label"><i class="tio-music"></i></span>
+            </a><!-- thumbnail -->
+            <div class="outer-overlay"><!-- overlay -->
+              <div class="btn-group dropstart">
+                <button class="carousel-btn btn dropdown-toggle" type="button" title="افزودن به"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                  <i class="tio-add"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="(isLoggedIn$ | async)"
+                       (click)="addToNowPlayingTrack(track.slug_id)">
+                      <i class="tio-filter-list"></i>
+                      لیست در حال پخش
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li (click)="setTrackSlugId(track.slug_id)">
+                    <a *ngIf="(isLoggedIn$ | async)" class="dropdown-item py-2" data-bs-toggle="modal"
+                       data-bs-target="#playlistModal">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                    <a class="dropdown-item py-2" *ngIf="!(isLoggedIn$ | async)" (click)="alertToSignIn()">
+                      <i class="tio-menu-hamburger"></i>
+                      پلی لیست های من
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="!(isLoggedIn$ | async)"
+                      (click)="alertToSignIn()">
+                <i class="tio-play"></i>
+              </button>
+              <button class="carousel-btn btn border-0" title="پخش" *ngIf="(isLoggedIn$ | async)"
+                      (click)="playTrack(track.slug_id)">
+                <i class="tio-play"></i>
+              </button>
+            </div><!-- overlay -->
+            <div class="carousel-info info-track mt-2 persian-info"
+                 [ngClass]="track.type == 'persian' ? 'persian-info' : 'world-info'"><!-- info -->
+              <a
+                (click)="shortLink('/track', track.slug_id)"
+                [routerLink]="['/track', track.slug_id, track.slug]"
+                [title]="track.slug"
+                class="text-decoration-none">
+                <b>{{track.type == 'persian' ? (track.title_fa | faNum) : track.title_en}}</b>
+              </a>
+              <div class="carousel-artists">
+                {{track.publication_year | faNum}}
+              </div>
+            </div><!-- info -->
+          </div><!-- item -->
+        </div><!--  slide -->
+        <div class="carousel-arrow arrow-track col-12 p-0"><!-- arrow -->
+          <button class="slide-right btn" id="slide-right-track" type="button">
+            <i class="tio-chevron-right"></i>
+          </button>
+          <button class="slide-left btn" id="slide-left-track" type="button">
+            <i class="tio-chevron-left"></i>
+          </button>
+        </div><!-- /arrow -->
+      </div>
+    </div>
+  </ng-container>
+</app-home-shrink-header>
+<app-home-playlist-modal></app-home-playlist-modal>
+<app-home-share [url]="url"></app-home-share>
